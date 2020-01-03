@@ -1,0 +1,31 @@
+<ng-container #inputFieldContainer>
+    <div *ngIf="!makingChanges; else inputFieldSettings">
+        <mat-form-field color="primary" [floatLabel]="'never'">
+            <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+        <mat-icon (click)="showInputFieldSettings()">settings</mat-icon>
+        <mat-icon (click)="removeField()">delete</mat-icon>
+    </div>
+
+    <ng-template #inputFieldSettings>
+        <div id="input-field-settings-container">
+            <form [formGroup]="inputFieldSettingsForm" style="width: 100%;">
+                <div style="width: 100%;">
+                    <mat-form-field color="primary">
+                        <mat-label>Title</mat-label>
+                        <input formControlName="title" matInput type="text">
+                    </mat-form-field>
+                </div>
+                <div style="width: 100%">
+                    <mat-label style="margin-right: 5px;">Required</mat-label>
+                    <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
+                </div>
+                <div class="action-btn-container">
+                    <button (click)="hideInputFieldSettings()" mat-raised-button type="button">Cancel</button>
+                    <button (click)="saveInputFieldSettings()" color="primary"  mat-raised-button type="button">Okay</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</ng-container>

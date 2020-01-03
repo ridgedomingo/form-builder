@@ -1,0 +1,10 @@
+<div>
+    <mat-form-field>
+        <mat-label>Sample dropdown</mat-label>
+        <mat-select>
+            <mat-option *ngFor="let choice of dropdownChoices" [value]="choice">
+                {{ choice }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>

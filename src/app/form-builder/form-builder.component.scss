@@ -1,0 +1,21 @@
+#form-container{
+    padding: 16px;
+    width: 80%;
+}
+
+#form-builder-container {
+    background: #f4f4f4;
+    padding: 16px;
+    width: 20%;
+
+    #form-field-options {
+        align-items: center;
+        display: flex;
+        margin-bottom: 5px;
+
+        #form-field-options-icon {
+            font-size: 22px;
+            margin-right: 5px;
+        }        
+    }
+}

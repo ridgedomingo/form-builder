@@ -1,0 +1,16 @@
+<div style="display: flex">
+    <div id="form-builder-container">
+        <h2>Toolbox</h2>
+        <div *ngFor="let choice of formBuilderChoices" (click)="addField(choice.component)" id="form-field-options">
+            <mat-icon id="form-field-options-icon">{{ choice.icon }}</mat-icon>
+            {{ choice.type }}
+        </div>
+    </div>
+    <div id="form-container">
+        <div *ngIf="noSelectionMade; else formQuestionnaire">
+            <h2>You have not yet selected any fields!</h2>
+            <p>Select from the options from the toolbox on your left to get started.</p>
+        </div>
+        <ng-template #formQuestionnaire></ng-template>
+    </div>
+</div>

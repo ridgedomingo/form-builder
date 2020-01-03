@@ -1,0 +1,8 @@
+<mat-label>Sample radio button group</mat-label>
+<mat-radio-group aria-labelled by="radio-group-label" class="radio-group">
+    <mat-radio-button *ngFor="let choices of radioButtonOptions"
+       class="radio-button"
+       [value]="choices">
+        {{choices}}
+    </mat-radio-button>
+</mat-radio-group>

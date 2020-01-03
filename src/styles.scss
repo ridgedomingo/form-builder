@@ -1,1 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+.action-btn-container {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+
+    button:first-child {
+        margin-right: 5px;
+    }
+}
+
+.required:after {
+    content: " *";
+    color: red;
+}
+
+mat-label {
+    color: #000000;
+}
+
+.mat-form-field-underline {
+    background-color: #000000 !important;
+    ;
+}
