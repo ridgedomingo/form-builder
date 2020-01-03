@@ -1,6 +1,31 @@
-<div id="form-input-field">
-    <mat-form-field>
-        <mat-label>Sample text area</mat-label>
-        <textarea matInput></textarea>
-    </mat-form-field>
-</div>
+<ng-container>
+    <div *ngIf="!makingChanges; else textAreaFieldSettings">
+        <mat-form-field [floatLabel]="'never'">
+            <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+            <textarea matInput readonly="true"></textarea>
+        </mat-form-field>
+        <mat-icon (click)="showFieldSettings()">settings</mat-icon>
+        <mat-icon (click)="removeField()">delete</mat-icon>
+    </div>
+
+    <ng-template #textAreaFieldSettings>
+        <div class="field-settings-container">
+            <form [formGroup]="fieldSettingsForm" style="width: 100%;">
+                <div style="width: 100%;">
+                    <mat-form-field color="primary">
+                        <mat-label>Title</mat-label>
+                        <input formControlName="title" matInput type="text">
+                    </mat-form-field>
+                </div>
+                <div style="width: 100%">
+                    <mat-label style="margin-right: 5px;">Required</mat-label>
+                    <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
+                </div>
+                <div class="action-btn-container">
+                    <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
+                    <button (click)="saveFieldSettings()" color="primary"  mat-raised-button type="button">Okay</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</ng-container>

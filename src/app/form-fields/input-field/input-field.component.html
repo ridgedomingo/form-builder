@@ -2,15 +2,15 @@
     <div *ngIf="!makingChanges; else inputFieldSettings">
         <mat-form-field color="primary" [floatLabel]="'never'">
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
-            <input matInput type="text">
+            <input matInput readonly ="true" type="text">
         </mat-form-field>
-        <mat-icon (click)="showInputFieldSettings()">settings</mat-icon>
+        <mat-icon (click)="showFieldSettings()">settings</mat-icon>
         <mat-icon (click)="removeField()">delete</mat-icon>
     </div>
 
     <ng-template #inputFieldSettings>
-        <div id="input-field-settings-container">
-            <form [formGroup]="inputFieldSettingsForm" style="width: 100%;">
+        <div class="field-settings-container">
+            <form [formGroup]="fieldSettingsForm" style="width: 100%;">
                 <div style="width: 100%;">
                     <mat-form-field color="primary">
                         <mat-label>Title</mat-label>
@@ -22,8 +22,8 @@
                     <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
                 </div>
                 <div class="action-btn-container">
-                    <button (click)="hideInputFieldSettings()" mat-raised-button type="button">Cancel</button>
-                    <button (click)="saveInputFieldSettings()" color="primary"  mat-raised-button type="button">Okay</button>
+                    <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
+                    <button (click)="saveFieldSettings()" color="primary"  mat-raised-button type="button">Okay</button>
                 </div>
             </form>
         </div>

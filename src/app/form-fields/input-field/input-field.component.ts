@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 export class InputFieldComponent implements OnInit {
   @Output() removeComponent: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
-  public inputFieldSettingsForm: FormGroup;
+  public fieldSettingsForm: FormGroup;
   public isRequired: boolean;
   public makingChanges: boolean;
   public title: string;
@@ -25,11 +25,11 @@ export class InputFieldComponent implements OnInit {
   ngOnInit() {
   }
 
-  public hideInputFieldSettings(): void {
+  public hideFieldSettings(): void {
     this.makingChanges = false;
   }
-  public saveInputFieldSettings(): void {
-    const formControls = this.inputFieldSettingsForm.controls;
+  public saveFieldSettings(): void {
+    const formControls = this.fieldSettingsForm.controls;
     this.makingChanges = false;
     this.title = formControls.title.value;
     this.isRequired = formControls.isRequired.value;
@@ -39,17 +39,16 @@ export class InputFieldComponent implements OnInit {
     this.removeComponent.emit(this.componentRef);
   }
 
-  public showInputFieldSettings(): void {
+  public showFieldSettings(): void {
     this.makingChanges = true;
   }
 
   private initializeForm(): void {
-    this.inputFieldSettingsForm = this.formBuilder.group({
+    this.fieldSettingsForm = this.formBuilder.group({
       title: ['', Validators.required],
       isRequired: [false]
     });
-    // this.inputFieldSettingsForm.controls.title.markAllAsTouched()
-    this.inputFieldSettingsForm.markAllAsTouched();
+    this.fieldSettingsForm.markAllAsTouched();
   }
 
   private setDefaultFieldValues(): void {
