@@ -45,3 +45,16 @@ mat-label {
     padding: 16px;
     width: 360px;
 }
+
+.field-options {
+    margin-right: 5px;
+}
+mat-icon {
+    vertical-align: middle;
+}
+mat-icon.show-on-hover {
+    visibility: hidden;
+}
+.field-options:hover .show-on-hover  {
+    visibility: visible;
+}

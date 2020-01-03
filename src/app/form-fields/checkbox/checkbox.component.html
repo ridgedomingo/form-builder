@@ -30,8 +30,9 @@
                     <div *ngFor="let option of fieldSettingsForm.controls.options.controls; let indx = index">
                         <ng-container formArrayName="options">
                             <mat-checkbox disabled="true">
-                                <div style="margin-left: 5px;">
-                                    <input matInput type="text" [formControlName]="indx" [value]="option.value">
+                                <div class="field-options">
+                                    <input #fieldOptions [id]="option.value + indx" [formControlName]="indx" matInput type="text" [value]="option.value">
+                                    <mat-icon (click)="removeOption(indx)" class="show-on-hover" color="warn">remove</mat-icon>
                                 </div>
                             </mat-checkbox>
                         </ng-container>
