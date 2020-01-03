@@ -11,13 +11,13 @@
     <ng-template #textAreaFieldSettings>
         <div class="field-settings-container">
             <form [formGroup]="fieldSettingsForm" style="width: 100%;">
-                <div style="width: 100%;">
+                <div>
                     <mat-form-field color="primary">
                         <mat-label>Title</mat-label>
                         <input formControlName="title" matInput type="text">
                     </mat-form-field>
                 </div>
-                <div style="width: 100%">
+                <div>
                     <mat-label style="margin-right: 5px;">Required</mat-label>
                     <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
                 </div>
