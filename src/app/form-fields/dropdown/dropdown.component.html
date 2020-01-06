@@ -5,11 +5,6 @@
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
             <mat-icon (click)="removeField()">delete</mat-icon>
         </div>
-        <!-- <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
-            <mat-select>
-                {{ option.value}}
-            </mat-select>
-        </div> -->
         <mat-form-field>
             <mat-select [(value)]="currentlySelected">
                 <mat-option *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container" [value]="option.value">

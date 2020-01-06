@@ -49,29 +49,58 @@ mat-label {
 .field-options {
     margin-right: 5px;
 }
+
 mat-icon {
     vertical-align: middle;
 }
+
 mat-icon.show-on-hover {
     visibility: hidden;
 }
-.field-options:hover .show-on-hover  {
+
+.field-options:hover .show-on-hover {
     visibility: visible;
 }
 
 .label-and-icon-container {
-  align-items: center;
-  display: flex;
+    align-items: center;
+    display: flex;
 
-  mat-label:first-child {
-    margin-right: 5px;
-  }
+    mat-label:first-child {
+        margin-right: 5px;
+    }
 }
 
 .mat-checkbox-frame {
-  border-color: #000000;
+    border-color: #000000;
 }
 
 .mat-checkbox-disabled .mat-checkbox-label {
-  color: #000000;
+    color: #000000;
+}
+
+.mat-radio-button {
+    margin-bottom: 2px;
+}
+
+.mat-radio-button.mat-radio-disabled .mat-radio-outer-circle, .mat-radio-button.mat-radio-disabled.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #000000; 
+}
+
+.mat-radio-button.mat-radio-disabled .mat-radio-label-content {
+    color: #000000;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+
+.radio-button {
+    margin: 5px;
+}
+
+.mat-radio-outer-circle {
+    border-color: #000000
 }
