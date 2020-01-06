@@ -14,7 +14,10 @@ export class CheckboxComponent implements OnInit {
   @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
   @Output() removeComponent: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
+  public currentFieldOptions: any;
+  public currentFieldOptionsValue: Array<string> = [];
   public fieldSettingsForm: FormGroup;
+  public initialFieldOptions: any;
   public inputValueLength: number;
   public isRequired: boolean;
   public makingChanges: boolean;
@@ -44,6 +47,7 @@ export class CheckboxComponent implements OnInit {
 
   public hideFieldSettings(): void {
     this.makingChanges = false;
+    this.resetFieldOptionsChoices();
     this.finishedModifyingFieldSettings$.next(true);
     this.finishedModifyingFieldSettings$.complete();
   }
@@ -59,6 +63,8 @@ export class CheckboxComponent implements OnInit {
 
   public saveFieldSettings(): void {
     const formControls = this.fieldSettingsForm.controls;
+    const options = this.fieldSettingsForm.controls.options as FormArray;
+    this.createCopyOfCurrentFieldOptions(options.controls);
     this.makingChanges = false;
     this.title = formControls.title.value;
     this.isRequired = formControls.isRequired.value;
@@ -74,18 +80,38 @@ export class CheckboxComponent implements OnInit {
   }
 
   private initializeForm(): void {
+    this.initialFieldOptions = [
+      new FormControl('Option 1'),
+      new FormControl('Option 2'),
+      new FormControl('Option 3'),
+    ];
     this.fieldSettingsForm = this.formBuilder.group({
       isRequired: [false],
-      options: new FormArray([
-        new FormControl('Option 1'),
-        new FormControl('Option 2'),
-        new FormControl('Option 3'),
-      ]),
+      options: new FormArray(this.initialFieldOptions),
       title: ['', Validators.required],
     });
     this.fieldSettingsForm.markAllAsTouched();
     const options = this.fieldSettingsForm.controls.options as FormArray;
+    this.createCopyOfCurrentFieldOptions(this.initialFieldOptions);
     this.optionsCounter = options.length;
+  }
+
+  private createCopyOfCurrentFieldOptions(fieldOptions: any): void {
+    this.currentFieldOptions = [];
+    this.currentFieldOptionsValue = [];
+    fieldOptions.map(option => {
+      this.currentFieldOptions.push(option);
+      this.currentFieldOptionsValue.push(option.value);
+    });
+  }
+
+  private resetFieldOptionsChoices(): void {
+    const options = this.fieldSettingsForm.controls.options as FormArray;
+    options.clear();
+    this.currentFieldOptions.forEach(option => {
+      options.push(option);
+    });
+    options.setValue(this.currentFieldOptionsValue);
   }
 
   private setChoicesInputFieldWidth(): void {
@@ -111,7 +137,7 @@ export class CheckboxComponent implements OnInit {
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Text Input';
+    this.title = 'Checkbox';
   }
 
 }
