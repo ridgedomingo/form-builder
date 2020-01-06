@@ -58,3 +58,20 @@ mat-icon.show-on-hover {
 .field-options:hover .show-on-hover  {
     visibility: visible;
 }
+
+.label-and-icon-container {
+  align-items: center;
+  display: flex;
+
+  mat-label:first-child {
+    margin-right: 5px;
+  }
+}
+
+.mat-checkbox-frame {
+  border-color: #000000;
+}
+
+.mat-checkbox-disabled .mat-checkbox-label {
+  color: #000000;
+}

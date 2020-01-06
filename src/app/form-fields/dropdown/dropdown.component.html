@@ -1,10 +1,53 @@
-<div>
-    <mat-form-field>
-        <mat-label>Sample dropdown</mat-label>
-        <mat-select>
-            <mat-option *ngFor="let choice of dropdownChoices" [value]="choice">
-                {{ choice }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
+<ng-container>
+    <div *ngIf="!makingChanges; else fieldSettings">
+        <div class="label-and-icon-container">
+            <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+            <mat-icon (click)="showFieldSettings()">settings</mat-icon>
+            <mat-icon (click)="removeField()">delete</mat-icon>
+        </div>
+        <!-- <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
+            <mat-select>
+                {{ option.value}}
+            </mat-select>
+        </div> -->
+        <mat-form-field>
+            <mat-select [(value)]="currentlySelected">
+                <mat-option *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container" [value]="option.value">
+                    {{ option.value}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <ng-template #fieldSettings>
+        <div class="field-settings-container">
+            <form [formGroup]="fieldSettingsForm" style="width: 100%;">
+                <div>
+                    <mat-form-field color="primary">
+                        <mat-label>Title</mat-label>
+                        <input formControlName="title" matInput type="text">
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-label style="margin-right: 5px;">Required</mat-label>
+                    <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
+                </div>
+                <div>
+                    <h4>Choices:</h4>
+                    <div *ngFor="let option of fieldSettingsForm.controls.options.controls; let indx = index">
+                        <ng-container formArrayName="options">
+                            <div class="field-options">
+                                <input #fieldOptions [id]="option.value + indx" [formControlName]="indx" matInput type="text" [value]="option.value">
+                                <mat-icon (click)="removeOption(indx)" class="show-on-hover" color="warn">remove</mat-icon>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <mat-icon (click)="addOptions()" style="color: #5cb85c">add</mat-icon>
+                </div>
+                <div class="action-btn-container">
+                    <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
+                    <button (click)="saveFieldSettings()" color="primary" mat-raised-button type="button">Okay</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</ng-container>

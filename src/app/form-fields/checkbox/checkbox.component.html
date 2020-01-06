@@ -1,6 +1,6 @@
 <ng-container>
     <div *ngIf="!makingChanges; else fieldSettings">
-        <div id="label-and-icon-container">
+        <div class="label-and-icon-container">
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
             <mat-icon (click)="removeField()">delete</mat-icon>
