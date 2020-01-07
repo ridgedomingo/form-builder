@@ -1,6 +1,9 @@
-import { Component, ComponentFactoryResolver, OnInit, OnDestroy , ViewContainerRef, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit, OnDestroy, ViewContainerRef, ViewChild } from '@angular/core';
 
-import { CheckboxComponent, DropdownComponent, InputFieldComponent, RadioButtonComponent, TextAreaComponent } from '../form-fields/index';
+import {
+  CheckboxComponent, DropdownComponent, InputFieldComponent,
+  NumberInputFieldComponent, RadioButtonComponent, TextAreaComponent
+} from '../form-fields/index';
 
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -27,7 +30,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   public get noSelectionMade(): boolean {
-    return this.formQuestionnaireRef.length ===  0;
+    return this.formQuestionnaireRef.length === 0;
   }
 
   public addField(fieldComponent: any): void {
@@ -39,14 +42,14 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private subscribeToRemoveFormFieldEvents(): void {
     this.componentRef.instance.removeComponent
-    .pipe(
-      distinctUntilChanged(),
-      takeUntil(this.componentIsDestroyed$)
-    )
-    .subscribe(component => {
-      const componentIndex = this.formQuestionnaireRef.indexOf(component.hostView);
-      this.formQuestionnaireRef.remove(componentIndex);
-    });
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.componentIsDestroyed$)
+      )
+      .subscribe(component => {
+        const componentIndex = this.formQuestionnaireRef.indexOf(component.hostView);
+        this.formQuestionnaireRef.remove(componentIndex);
+      });
   }
 
   private getFormBuilderChoices(): void {
@@ -65,6 +68,11 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         component: RadioButtonComponent,
         icon: 'radio_button_on',
         type: 'Radio Button',
+      },
+      {
+        component: NumberInputFieldComponent,
+        icon: 'format_list_numbered',
+        type: 'Number Input',
       },
       {
         component: TextAreaComponent,

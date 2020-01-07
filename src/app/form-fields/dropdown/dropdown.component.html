@@ -36,7 +36,10 @@
                             </div>
                         </ng-container>
                     </div>
-                    <mat-icon (click)="addOptions()" style="color: #5cb85c">add</mat-icon>
+                    <div (click)="addOptions()">
+                        <mat-icon style="color: #5cb85c">add</mat-icon>
+                        Add Option
+                    </div>
                 </div>
                 <div class="action-btn-container">
                     <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>

@@ -5,23 +5,26 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule, MatCheckboxModule, MatIconModule, MatInputModule, MatSelectModule , MatRadioModule } from '@angular/material';
 
 import { CheckboxComponent } from './checkbox/checkbox.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
 import { InputFieldComponent } from './input-field/input-field.component';
+import { NumberInputFieldComponent } from './number-input-field/number-input-field.component';
 import { RadioButtonComponent } from './radio-button/radio-button.component';
 import { TextAreaComponent } from './text-area/text-area.component';
-import { DropdownComponent } from './dropdown/dropdown.component';
 
 @NgModule({
   declarations: [
     CheckboxComponent,
+    DropdownComponent,
     InputFieldComponent,
+    NumberInputFieldComponent,
     RadioButtonComponent,
     TextAreaComponent,
-    DropdownComponent,
   ],
   entryComponents: [
       CheckboxComponent,
       DropdownComponent,
       InputFieldComponent,
+      NumberInputFieldComponent,
       RadioButtonComponent,
       TextAreaComponent
   ],
