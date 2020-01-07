@@ -41,14 +41,25 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToRemoveFormFieldEvents(): void {
-    this.componentRef.instance.removeComponent
+    this.componentRef.instance.componentAction
       .pipe(
         distinctUntilChanged(),
         takeUntil(this.componentIsDestroyed$)
       )
-      .subscribe(component => {
-        const componentIndex = this.formQuestionnaireRef.indexOf(component.hostView);
-        this.formQuestionnaireRef.remove(componentIndex);
+      .subscribe(data => {
+        const componentInstance = data.component.hostView;
+        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(data.component.hostView);
+        switch (data.action) {
+          case 'move_down':
+            this.formQuestionnaireRef.move(componentInstance, componentInstanceIndex + 1);
+            break;
+          case 'move_up':
+            this.formQuestionnaireRef.move(componentInstance, componentInstanceIndex - 1);
+            break;
+          case 'delete':
+          this.formQuestionnaireRef.remove(componentInstanceIndex);
+          break;
+        }
       });
   }
 

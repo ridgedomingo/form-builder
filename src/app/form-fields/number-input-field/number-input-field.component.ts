@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class NumberInputFieldComponent implements OnInit {
-  @Output() removeComponent: EventEmitter<any> = new EventEmitter();
+  @Output() componentAction: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
   public fieldSettingsForm: FormGroup;
   public isRequired: boolean;
@@ -25,6 +25,14 @@ export class NumberInputFieldComponent implements OnInit {
   ngOnInit() {
   }
 
+  public emitComponentRefAction(action?: string): void {
+    const data = {
+      action,
+      component: this.componentRef,
+    };
+    this.componentAction.emit(data);
+  }
+
   public hideFieldSettings(): void {
     this.makingChanges = false;
   }
@@ -33,10 +41,6 @@ export class NumberInputFieldComponent implements OnInit {
     this.makingChanges = false;
     this.title = formControls.title.value;
     this.isRequired = formControls.isRequired.value;
-  }
-
-  public removeField(): void {
-    this.removeComponent.emit(this.componentRef);
   }
 
   public showFieldSettings(): void {

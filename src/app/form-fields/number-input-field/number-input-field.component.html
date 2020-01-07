@@ -5,7 +5,9 @@
             <input matInput readonly="true" type="text">
         </mat-form-field>
         <mat-icon (click)="showFieldSettings()">settings</mat-icon>
-        <mat-icon (click)="removeField()">delete</mat-icon>
+        <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
+        <mat-icon (click)="emitComponentRefAction('move_down')">arrow_downward</mat-icon>
+        <mat-icon (click)="emitComponentRefAction('move_up')">arrow_upward</mat-icon>
     </div>
 
     <ng-template #inputFieldSettings>

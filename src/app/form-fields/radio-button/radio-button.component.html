@@ -3,7 +3,9 @@
         <div class="label-and-icon-container">
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
-            <mat-icon (click)="removeField()">delete</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move_down')">arrow_downward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move_up')">arrow_upward</mat-icon>
         </div>
         <mat-radio-group class="radio-group" disabled="true">
             <mat-radio-button *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container" [value]="option.value">

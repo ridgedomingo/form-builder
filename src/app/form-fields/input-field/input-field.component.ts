@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, ViewEncapsulation, Output} from '@angular/core';
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, EventEmitter, OnInit, ViewEncapsulation, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-input-field',
@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators} from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class InputFieldComponent implements OnInit {
-  @Output() removeComponent: EventEmitter<any> = new EventEmitter();
+  @Output() componentAction: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
   public fieldSettingsForm: FormGroup;
   public isRequired: boolean;
@@ -35,8 +35,12 @@ export class InputFieldComponent implements OnInit {
     this.isRequired = formControls.isRequired.value;
   }
 
-  public removeField(): void {
-    this.removeComponent.emit(this.componentRef);
+  public emitComponentRefAction(action?: string): void {
+    const data = {
+      action,
+      component: this.componentRef,
+    };
+    this.componentAction.emit(data);
   }
 
   public showFieldSettings(): void {

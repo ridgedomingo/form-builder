@@ -12,7 +12,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 })
 export class CheckboxComponent implements OnInit {
   @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
-  @Output() removeComponent: EventEmitter<any> = new EventEmitter();
+  @Output() componentAction: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
   public currentFieldOptions: any;
   public currentFieldOptionsValue: Array<string> = [];
@@ -52,8 +52,12 @@ export class CheckboxComponent implements OnInit {
     this.finishedModifyingFieldSettings$.complete();
   }
 
-  public removeField(): void {
-    this.removeComponent.emit(this.componentRef);
+  public emitComponentRefAction(action?: string): void {
+    const data = {
+      action,
+      component: this.componentRef,
+    };
+    this.componentAction.emit(data);
   }
 
   public removeOption(index: number): void {
