@@ -1,50 +1,23 @@
-import { Component, EventEmitter, OnInit, ViewEncapsulation, Output} from '@angular/core';
-import { FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder , Validators } from '@angular/forms';
 
+import { InputFormFieldsBaseComponent } from '../input-form-fields-base';
 @Component({
   selector: 'app-number-input-field',
   templateUrl: './number-input-field.component.html',
   styleUrls: ['./number-input-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class NumberInputFieldComponent implements OnInit {
-  @Output() componentAction: EventEmitter<any> = new EventEmitter();
-  public componentRef: any;
-  public fieldSettingsForm: FormGroup;
-  public isRequired: boolean;
-  public makingChanges: boolean;
-  public title: string;
-
+export class NumberInputFieldComponent extends InputFormFieldsBaseComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder
   ) {
+    super();
     this.setDefaultFieldValues();
     this.initializeForm();
   }
 
   ngOnInit() {
-  }
-
-  public emitComponentRefAction(action?: string): void {
-    const data = {
-      action,
-      component: this.componentRef,
-    };
-    this.componentAction.emit(data);
-  }
-
-  public hideFieldSettings(): void {
-    this.makingChanges = false;
-  }
-  public saveFieldSettings(): void {
-    const formControls = this.fieldSettingsForm.controls;
-    this.makingChanges = false;
-    this.title = formControls.title.value;
-    this.isRequired = formControls.isRequired.value;
-  }
-
-  public showFieldSettings(): void {
-    this.makingChanges = true;
   }
 
   private initializeForm(): void {

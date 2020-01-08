@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, ViewEncapsulation, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+
+import { InputFormFieldsBaseComponent } from '../input-form-fields-base';
 
 @Component({
   selector: 'app-input-field',
@@ -7,47 +9,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./input-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class InputFieldComponent implements OnInit {
-  @Output() componentAction: EventEmitter<any> = new EventEmitter();
-  public componentRef: any;
-  public componentPosition: number;
-  public fieldSettingsForm: FormGroup;
-  public isRequired: boolean;
-  public makingChanges: boolean;
-  public title: string;
-  public totalFieldItems: number;
-
+export class InputFieldComponent extends InputFormFieldsBaseComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder
   ) {
+    super();
     this.setDefaultFieldValues();
     this.initializeForm();
   }
 
   ngOnInit() {
-  }
-
-  public hideFieldSettings(): void {
-    this.makingChanges = false;
-  }
-  public saveFieldSettings(): void {
-    const formControls = this.fieldSettingsForm.controls;
-    this.makingChanges = false;
-    this.title = formControls.title.value;
-    this.isRequired = formControls.isRequired.value;
-  }
-
-  public emitComponentRefAction(action: string, direction?: string): void {
-    const data = {
-      action,
-      component: this.componentRef,
-      direction
-    };
-    this.componentAction.emit(data);
-  }
-
-  public showFieldSettings(): void {
-    this.makingChanges = true;
   }
 
   private initializeForm(): void {
