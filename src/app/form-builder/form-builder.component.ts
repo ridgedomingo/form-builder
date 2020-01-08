@@ -17,6 +17,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   @ViewChild('formQuestionnaire', { static: true, read: ViewContainerRef }) formQuestionnaireRef;
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
+  public formItems: Array<any> = [];
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
 
@@ -37,30 +38,48 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(fieldComponent);
     this.componentRef = this.formQuestionnaireRef.createComponent(formFieldComponentFactory);
     this.componentRef.instance.componentRef = this.componentRef;
-    this.subscribeToRemoveFormFieldEvents();
+    this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
+    this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
+    this.formItems.push(this.componentRef);
+    this.subscribeToFormFieldEvents();
   }
 
-  private subscribeToRemoveFormFieldEvents(): void {
+  private subscribeToFormFieldEvents(): void {
     this.componentRef.instance.componentAction
       .pipe(
         distinctUntilChanged(),
         takeUntil(this.componentIsDestroyed$)
       )
       .subscribe(data => {
-        const componentInstance = data.component.hostView;
-        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(data.component.hostView);
+        const componentInstance = data.component;
+        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
         switch (data.action) {
-          case 'move_down':
-            this.formQuestionnaireRef.move(componentInstance, componentInstanceIndex + 1);
-            break;
-          case 'move_up':
-            this.formQuestionnaireRef.move(componentInstance, componentInstanceIndex - 1);
+          case 'move':
+            const componentPosition = data.direction === 'up' ? componentInstanceIndex - 1 : componentInstanceIndex + 1;
+            this.formQuestionnaireRef.move(componentInstance.hostView, componentPosition);
+            const newComponentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
+            this.moveFormItemsPosition(componentInstanceIndex, newComponentInstanceIndex);
+            this.assignFieldNewIndex();
             break;
           case 'delete':
-          this.formQuestionnaireRef.remove(componentInstanceIndex);
-          break;
+            this.formQuestionnaireRef.remove(componentInstanceIndex);
+            this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
+            this.formItems.splice(componentInstanceIndex, 1);
+            this.assignFieldNewIndex();
+            break;
         }
       });
+  }
+
+  private assignFieldNewIndex(): void {
+    this.formItems.forEach((field, index) => {
+      field.instance.componentPosition = index;
+    });
+  }
+
+  private moveFormItemsPosition(oldIndex: number, newIndex: number): void {
+    const a = this.formItems.splice(oldIndex, 1)[0];
+    this.formItems.splice(newIndex, 0, a);
   }
 
   private getFormBuilderChoices(): void {

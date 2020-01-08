@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, ViewEncapsulation, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, ViewEncapsulation, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -10,10 +10,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class InputFieldComponent implements OnInit {
   @Output() componentAction: EventEmitter<any> = new EventEmitter();
   public componentRef: any;
+  public componentPosition: number;
   public fieldSettingsForm: FormGroup;
   public isRequired: boolean;
   public makingChanges: boolean;
   public title: string;
+  public totalFieldItems: number;
 
   constructor(
     private formBuilder: FormBuilder
@@ -35,10 +37,11 @@ export class InputFieldComponent implements OnInit {
     this.isRequired = formControls.isRequired.value;
   }
 
-  public emitComponentRefAction(action?: string): void {
+  public emitComponentRefAction(action: string, direction?: string): void {
     const data = {
       action,
       component: this.componentRef,
+      direction
     };
     this.componentAction.emit(data);
   }
