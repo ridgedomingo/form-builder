@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -12,18 +12,22 @@ export class InputFormFieldsBaseComponent implements OnInit {
   protected makingChanges: boolean;
   protected title: string;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
   }
 
-  protected emitComponentRefAction(action: string, direction?: string): void {
-    const data = {
-      action,
-      component: this.componentRef,
-      direction
-    };
-    this.componentAction.emit(data);
+  protected triggerComponentAction(action: string, direction?: string): void {
+    if (action === 'show') {
+      this.showFieldSettings();
+    } else {
+      const data = {
+        action,
+        component: this.componentRef,
+        direction
+      };
+      this.componentAction.emit(data);
+    }
   }
 
   protected hideFieldSettings(): void {
@@ -36,7 +40,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
     this.isRequired = formControls.isRequired.value;
   }
 
-  protected showFieldSettings(): void {
+  private showFieldSettings(): void {
     this.makingChanges = true;
   }
 

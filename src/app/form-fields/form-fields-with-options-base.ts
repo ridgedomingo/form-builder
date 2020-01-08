@@ -49,13 +49,17 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.finishedModifyingFieldSettings$.complete();
     }
 
-    protected emitComponentRefAction(action: string, direction?: string): void {
-        const data = {
-            action,
-            component: this.componentRef,
-            direction
-        };
-        this.componentAction.emit(data);
+    protected triggerComponentAction(action: string, direction?: string): void {
+        if (action === 'show') {
+            this.showFieldSettings();
+        } else {
+            const data = {
+                action,
+                component: this.componentRef,
+                direction
+            };
+            this.componentAction.emit(data);
+        }
     }
 
     protected removeOption(index: number): void {
@@ -73,12 +77,6 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
-    }
-
-    protected showFieldSettings(): void {
-        this.finishedModifyingFieldSettings$ = new Subject();
-        this.makingChanges = true;
-        this.setChoicesInputFieldWidth();
     }
 
     protected initializeForm(): void {
@@ -135,6 +133,12 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
                         });
                 });
             });
+    }
+
+    private showFieldSettings(): void {
+        this.finishedModifyingFieldSettings$ = new Subject();
+        this.makingChanges = true;
+        this.setChoicesInputFieldWidth();
     }
 
 }

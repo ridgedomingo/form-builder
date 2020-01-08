@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 
 import { MatButtonModule, MatCheckboxModule, MatIconModule, MatInputModule, MatSelectModule , MatRadioModule } from '@angular/material';
 
+import { FormFieldsActionModule } from '../form-field-actions/form-field-actions.module';
+
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { InputFieldComponent } from './input-field/input-field.component';
@@ -30,6 +32,7 @@ import { TextAreaComponent } from './text-area/text-area.component';
   ],
   imports: [
       BrowserModule,
+      FormFieldsActionModule,
       MatButtonModule,
       MatCheckboxModule,
       MatIconModule,

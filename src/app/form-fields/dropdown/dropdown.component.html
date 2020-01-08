@@ -14,10 +14,7 @@
             </div>
         </div>
         <div class="field-action-btn-container">
-            <mat-icon (click)="showFieldSettings()">settings</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move', 'down')">arrow_downward</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move', 'up')">arrow_upward</mat-icon>
+            <app-form-field-actions (componentAction)="triggerComponentAction($event.action, $event.direction)"></app-form-field-actions>
         </div>
     </div>
     <ng-template #fieldSettings>
