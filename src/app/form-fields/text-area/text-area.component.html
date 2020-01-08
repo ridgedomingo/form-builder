@@ -6,8 +6,8 @@
         </mat-form-field>
         <mat-icon (click)="showFieldSettings()">settings</mat-icon>
         <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-        <mat-icon (click)="emitComponentRefAction('move_down')">arrow_downward</mat-icon>
-        <mat-icon (click)="emitComponentRefAction('move_up')">arrow_upward</mat-icon>
+        <mat-icon (click)="emitComponentRefAction('move','down')">arrow_downward</mat-icon>
+        <mat-icon (click)="emitComponentRefAction('move','up')">arrow_upward</mat-icon>
     </div>
 
     <ng-template #textAreaFieldSettings>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="action-btn-container">
                     <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
-                    <button (click)="saveFieldSettings()" color="primary"  mat-raised-button type="button">Okay</button>
+                    <button (click)="saveFieldSettings()" color="primary" mat-raised-button type="button">Okay</button>
                 </div>
             </form>
         </div>

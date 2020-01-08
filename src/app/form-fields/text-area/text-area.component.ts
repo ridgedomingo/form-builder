@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+
+import { InputFormFieldsBaseComponent } from '../input-form-fields-base';
 
 @Component({
   selector: 'app-text-area',
@@ -7,44 +9,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./text-area.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TextAreaComponent implements OnInit {
-  @Output() componentAction: EventEmitter<any> = new EventEmitter();
-  public componentRef: any;
-  public isRequired: boolean;
-  public makingChanges: boolean;
-  public fieldSettingsForm: FormGroup;
-  public title: string;
-
+export class TextAreaComponent extends InputFormFieldsBaseComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder
   ) {
+    super();
     this.setDefaultFieldValues();
     this.initializeForm();
   }
 
   ngOnInit() {
-  }
-
-  public hideFieldSettings(): void {
-    this.makingChanges = false;
-  }
-  public saveFieldSettings(): void {
-    const formControls = this.fieldSettingsForm.controls;
-    this.makingChanges = false;
-    this.title = formControls.title.value;
-    this.isRequired = formControls.isRequired.value;
-  }
-
-  public emitComponentRefAction(action?: string): void {
-    const data = {
-      action,
-      component: this.componentRef,
-    };
-    this.componentAction.emit(data);
-  }
-
-  public showFieldSettings(): void {
-    this.makingChanges = true;
   }
 
   private initializeForm(): void {

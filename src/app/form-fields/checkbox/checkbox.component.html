@@ -4,8 +4,8 @@
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
             <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move_down')">arrow_downward</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move_up')">arrow_upward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move','down')">arrow_downward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move','up')">arrow_upward</mat-icon>
         </div>
         <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
             <mat-checkbox [disabled]="true">
