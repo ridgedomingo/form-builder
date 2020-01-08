@@ -1,16 +1,21 @@
 <ng-container>
-    <div *ngIf="!makingChanges; else fieldSettings">
-        <div class="label-and-icon-container">
+    <div *ngIf="!makingChanges; else fieldSettings" class="field-container">
+        <div class="form-field-and-label">
+            <span> {{ componentPosition + 1. }} </span>
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+            <div class="field-options-container">
+                <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
+                    <mat-checkbox [disabled]="true">
+                        {{ option.value}}
+                    </mat-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="field-action-btn-container">
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
             <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move','down')">arrow_downward</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move','up')">arrow_upward</mat-icon>
-        </div>
-        <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
-            <mat-checkbox [disabled]="true">
-                {{ option.value}}
-            </mat-checkbox>
+            <mat-icon (click)="emitComponentRefAction('move', 'down')">arrow_downward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move', 'up')">arrow_upward</mat-icon>
         </div>
     </div>
 

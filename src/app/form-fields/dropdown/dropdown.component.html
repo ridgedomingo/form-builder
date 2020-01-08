@@ -1,19 +1,24 @@
 <ng-container>
-    <div *ngIf="!makingChanges; else fieldSettings">
-        <div class="label-and-icon-container">
+    <div *ngIf="!makingChanges; else fieldSettings" class="field-container">
+        <div class="form-field-and-label">
+            <span> {{ componentPosition + 1. }} </span>
             <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+            <div class="field-options-container">
+                <mat-form-field>
+                    <mat-select [(value)]="currentlySelected">
+                        <mat-option *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container" [value]="option.value">
+                            {{ option.value}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="field-action-btn-container">
             <mat-icon (click)="showFieldSettings()">settings</mat-icon>
             <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move','down')">arrow_downward</mat-icon>
-            <mat-icon (click)="emitComponentRefAction('move','up')">arrow_upward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move', 'down')">arrow_downward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move', 'up')">arrow_upward</mat-icon>
         </div>
-        <mat-form-field>
-            <mat-select [(value)]="currentlySelected">
-                <mat-option *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container" [value]="option.value">
-                    {{ option.value}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
     </div>
     <ng-template #fieldSettings>
         <div class="field-settings-container">

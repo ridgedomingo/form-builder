@@ -1,14 +1,18 @@
 <ng-container #inputFieldContainer>
-    <div *ngIf="!makingChanges; else inputFieldSettings">
-        <span> {{ componentPosition + 1. }} </span>
-        <mat-form-field color="primary" [floatLabel]="'never'">
-            <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
-            <input matInput readonly="true" type="text">
-        </mat-form-field>
-        <mat-icon (click)="showFieldSettings()">settings</mat-icon>
-        <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
-        <mat-icon (click)="emitComponentRefAction('move', 'down')">arrow_downward</mat-icon>
-        <mat-icon (click)="emitComponentRefAction('move', 'up')">arrow_upward</mat-icon>
+    <div *ngIf="!makingChanges; else inputFieldSettings" class="field-container">
+        <div class="form-field-and-label">
+            <span> {{ componentPosition + 1. }} </span>
+            <mat-form-field color="primary" [floatLabel]="'never'">
+                <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
+                <input matInput readonly="true" type="text">
+            </mat-form-field>
+        </div>
+        <div class="field-action-btn-container">
+            <mat-icon (click)="showFieldSettings()">settings</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('delete')">delete</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move', 'down')">arrow_downward</mat-icon>
+            <mat-icon (click)="emitComponentRefAction('move', 'up')">arrow_upward</mat-icon>
+        </div>
     </div>
 
     <ng-template #inputFieldSettings>

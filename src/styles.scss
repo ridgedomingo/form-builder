@@ -35,6 +35,19 @@ mat-label {
     background-color: #000000 !important;
 }
 
+.field-container {
+    background-color: #f4f4f4;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    display: flex;
+    margin-bottom: 10px;
+    padding: 16px;
+
+    .field-options-container {
+        margin-left: 15px;
+    }
+}
+
 .field-settings-container {
     background: #e7e6e6;
     box-shadow: #e6e6e6 0px 10px 10px;
@@ -44,6 +57,16 @@ mat-label {
     margin-bottom: 15px;
     padding: 16px;
     width: 360px;
+}
+
+.form-field-and-label {
+    width: 75%;
+}
+
+.field-action-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 25%;
 }
 
 .field-options {
@@ -62,15 +85,6 @@ mat-icon.show-on-hover {
     visibility: visible;
 }
 
-.label-and-icon-container {
-    align-items: center;
-    display: flex;
-
-    mat-label:first-child {
-        margin-right: 5px;
-    }
-}
-
 .mat-checkbox-frame {
     border-color: #000000;
 }
@@ -83,8 +97,9 @@ mat-icon.show-on-hover {
     margin-bottom: 2px;
 }
 
-.mat-radio-button.mat-radio-disabled .mat-radio-outer-circle, .mat-radio-button.mat-radio-disabled.mat-radio-checked .mat-radio-outer-circle {
-    border-color: #000000; 
+.mat-radio-button.mat-radio-disabled .mat-radio-outer-circle,
+.mat-radio-button.mat-radio-disabled.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #000000;
 }
 
 .mat-radio-button.mat-radio-disabled .mat-radio-label-content {
