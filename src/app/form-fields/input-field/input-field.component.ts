@@ -10,6 +10,7 @@ import { InputFormFieldsBaseComponent } from '../input-form-fields-base';
   encapsulation: ViewEncapsulation.None
 })
 export class InputFieldComponent extends InputFormFieldsBaseComponent implements OnInit {
+  public componentPosition: number;
   constructor(
     private formBuilder: FormBuilder
   ) {
@@ -23,8 +24,9 @@ export class InputFieldComponent extends InputFormFieldsBaseComponent implements
 
   private initializeForm(): void {
     this.fieldSettingsForm = this.formBuilder.group({
+      isRequired: [false],
+      position: ['', Validators.required],
       title: ['', Validators.required],
-      isRequired: [false]
     });
     this.fieldSettingsForm.markAllAsTouched();
   }

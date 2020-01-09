@@ -1,16 +1,19 @@
 #form-container{
+    background: #e6e6e6;
     padding: 16px;
     width: 80%;
 }
 
 #form-builder-container {
     background: #f4f4f4;
+    height: 100vh; 
     padding: 16px;
     width: 20%;
 
     #form-field-options {
         align-items: center;
         display: flex;
+        height: 2rem;
         margin-bottom: 5px;
 
         #form-field-options-icon {

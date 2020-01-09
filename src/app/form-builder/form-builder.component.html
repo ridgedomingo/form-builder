@@ -1,6 +1,7 @@
 <div style="display: flex">
     <div id="form-builder-container">
         <h2>Toolbox</h2>
+        <hr>
         <div *ngFor="let choice of formBuilderChoices" (click)="addField(choice.component)" id="form-field-options">
             <mat-icon id="form-field-options-icon">{{ choice.icon }}</mat-icon>
             {{ choice.type }}

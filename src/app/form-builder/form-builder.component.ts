@@ -39,7 +39,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef = this.formQuestionnaireRef.createComponent(formFieldComponentFactory);
     this.componentRef.instance.componentRef = this.componentRef;
     this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
-    this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
+    // this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
   }
@@ -55,7 +55,10 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         const componentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
         switch (data.action) {
           case 'move':
-            const componentPosition = data.direction === 'up' ? componentInstanceIndex - 1 : componentInstanceIndex + 1;
+            const componentPosition = data.direction === 'up' ?
+              componentInstanceIndex - data.placement : componentInstanceIndex + data.placement;
+            console.log('placement', data.placement);
+            console.log('direction', data.direction);
             this.formQuestionnaireRef.move(componentInstance.hostView, componentPosition);
             const newComponentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
             this.moveFormItemsPosition(componentInstanceIndex, newComponentInstanceIndex);
@@ -63,7 +66,6 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
             break;
           case 'delete':
             this.formQuestionnaireRef.remove(componentInstanceIndex);
-            this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
             this.formItems.splice(componentInstanceIndex, 1);
             this.assignFieldNewIndex();
             break;

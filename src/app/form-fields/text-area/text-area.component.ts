@@ -23,6 +23,7 @@ export class TextAreaComponent extends InputFormFieldsBaseComponent implements O
 
   private initializeForm(): void {
     this.fieldSettingsForm = this.formBuilder.group({
+      position: ['', Validators.required],
       title: ['', Validators.required],
       isRequired: [false]
     });

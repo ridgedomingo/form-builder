@@ -23,6 +23,7 @@ export class NumberInputFieldComponent extends InputFormFieldsBaseComponent impl
   private initializeForm(): void {
     this.fieldSettingsForm = this.formBuilder.group({
       title: ['', Validators.required],
+      position: ['', Validators.required],
       isRequired: [false]
     });
     this.fieldSettingsForm.markAllAsTouched();

@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class FormFieldsWithOptionsBaseComponent implements OnInit {
     @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
     @Output() componentAction: EventEmitter<any> = new EventEmitter();
+    protected componentPosition: number;
     protected componentRef: any;
     protected currentFieldOptions: any;
     protected currentFieldOptionsValue: Array<string> = [];
@@ -77,6 +78,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
+        this.changeComponentPosition();
     }
 
     protected initializeForm(): void {
@@ -87,6 +89,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         ];
         this.fieldSettingsForm = this.formBuilder.group({
             isRequired: [false],
+            position: ['', Validators.required],
             options: new FormArray(this.initialFieldOptions),
             title: ['', Validators.required],
         });
@@ -95,6 +98,20 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.createCopyOfCurrentFieldOptions(this.initialFieldOptions);
         this.optionsCounter = options.length;
     }
+
+  private changeComponentPosition(): void {
+    const newComponentPosition = this.fieldSettingsForm.controls.position.value;
+    if (newComponentPosition !== this.componentPosition + 1) {
+      const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
+      const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
+      this.componentAction.emit({
+        action: 'move',
+        component: this.componentRef,
+        direction,
+        placement
+      });
+    }
+  }
 
     private createCopyOfCurrentFieldOptions(fieldOptions: any): void {
         this.currentFieldOptions = [];
@@ -138,6 +155,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     private showFieldSettings(): void {
         this.finishedModifyingFieldSettings$ = new Subject();
         this.makingChanges = true;
+        this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
         this.setChoicesInputFieldWidth();
     }
 
