@@ -12,6 +12,10 @@
             <h2>You have not yet selected any fields!</h2>
             <p>Select from the options from the toolbox on your left to get started.</p>
         </div>
-        <ng-template #formQuestionnaire></ng-template>
+        <ng-template #formQuestionnaire>
+            <div style="height: 50px;">
+                <button (click)="generateForm()" style="float: right" color="primary" mat-raised-button>Generate Form</button>
+            </div>
+        </ng-template>
     </div>
 </div>

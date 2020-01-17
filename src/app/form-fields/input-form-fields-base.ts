@@ -9,6 +9,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
   protected componentPosition: number;
   protected componentRef: any;
   protected fieldSettingsForm: FormGroup;
+  protected fieldType: string;
   protected isRequired: boolean;
   protected makingChanges: boolean;
   protected title: string;

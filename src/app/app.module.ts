@@ -6,8 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormFieldsModule } from './form-fields/form-fields.module';
-import { MatIconModule } from '@angular/material';
-
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 import { FormBuilderComponent } from './form-builder/form-builder.component';
 
@@ -21,6 +20,7 @@ import { FormBuilderComponent } from './form-builder/form-builder.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormFieldsModule,
+    MatButtonModule,
     MatIconModule
   ],
   providers: [],

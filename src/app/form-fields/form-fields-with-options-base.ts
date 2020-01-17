@@ -16,6 +16,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     protected currentFieldOptions: any;
     protected currentFieldOptionsValue: Array<string> = [];
     protected fieldSettingsForm: FormGroup;
+    protected fieldType: string;
     protected initialFieldOptions: any;
     protected inputValueLength: number;
     protected isRequired: boolean;
@@ -99,19 +100,19 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.optionsCounter = options.length;
     }
 
-  private changeComponentPosition(): void {
-    const newComponentPosition = this.fieldSettingsForm.controls.position.value;
-    if (newComponentPosition !== this.componentPosition + 1) {
-      const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
-      const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
-      this.componentAction.emit({
-        action: 'move',
-        component: this.componentRef,
-        direction,
-        placement
-      });
+    private changeComponentPosition(): void {
+        const newComponentPosition = this.fieldSettingsForm.controls.position.value;
+        if (newComponentPosition !== this.componentPosition + 1) {
+            const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
+            const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
+            this.componentAction.emit({
+                action: 'move',
+                component: this.componentRef,
+                direction,
+                placement
+            });
+        }
     }
-  }
 
     private createCopyOfCurrentFieldOptions(fieldOptions: any): void {
         this.currentFieldOptions = [];

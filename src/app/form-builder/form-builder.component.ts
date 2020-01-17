@@ -7,12 +7,24 @@ import {
 
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+interface IFormFields {
+  choices?: Array<string>;
+  index: number;
+  isRequired: boolean;
+  title: string;
+  type: string;
+}
 
+interface IGeneratedForm {
+  fields: Array<IFormFields>;
+}
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
+
+
 export class FormBuilderComponent implements OnInit, OnDestroy {
   @ViewChild('formQuestionnaire', { static: true, read: ViewContainerRef }) formQuestionnaireRef;
   public componentRef: any;
@@ -39,38 +51,30 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef = this.formQuestionnaireRef.createComponent(formFieldComponentFactory);
     this.componentRef.instance.componentRef = this.componentRef;
     this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
-    // this.componentRef.instance.totalFieldItems = this.formQuestionnaireRef.length;
+    this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
   }
 
-  private subscribeToFormFieldEvents(): void {
-    this.componentRef.instance.componentAction
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.componentIsDestroyed$)
-      )
-      .subscribe(data => {
-        const componentInstance = data.component;
-        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
-        switch (data.action) {
-          case 'move':
-            const componentPosition = data.direction === 'up' ?
-              componentInstanceIndex - data.placement : componentInstanceIndex + data.placement;
-            console.log('placement', data.placement);
-            console.log('direction', data.direction);
-            this.formQuestionnaireRef.move(componentInstance.hostView, componentPosition);
-            const newComponentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
-            this.moveFormItemsPosition(componentInstanceIndex, newComponentInstanceIndex);
-            this.assignFieldNewIndex();
-            break;
-          case 'delete':
-            this.formQuestionnaireRef.remove(componentInstanceIndex);
-            this.formItems.splice(componentInstanceIndex, 1);
-            this.assignFieldNewIndex();
-            break;
-        }
+  public generateForm(): void {
+    const generatedForm: IGeneratedForm = {} as IGeneratedForm;
+    generatedForm.fields = this.formFields;
+  }
+
+  private get formFields(): Array<IFormFields> {
+    const formFields: Array<IFormFields> = [];
+    this.formItems.forEach(field => {
+      const instance = field.instance;
+      const fieldType = instance.fieldType.split('Component');
+      formFields.push({
+        ...(this.fieldTypeHasChoices(instance.fieldType) ? { choices: instance.currentFieldOptionsValue } : {}),
+        index: instance.componentPosition,
+        isRequired: instance.isRequired ? true : false,
+        title: instance.title,
+        type: fieldType[0],
       });
+    });
+    return formFields;
   }
 
   private assignFieldNewIndex(): void {
@@ -79,9 +83,14 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     });
   }
 
-  private moveFormItemsPosition(oldIndex: number, newIndex: number): void {
-    const a = this.formItems.splice(oldIndex, 1)[0];
-    this.formItems.splice(newIndex, 0, a);
+  private fieldTypeHasChoices(fieldType: string): boolean {
+    const fieldsWithChoices = ['RadioButtonComponent', 'DropdownComponent', 'CheckboxComponent'];
+    return fieldsWithChoices.includes(fieldType);
+  }
+
+  private moveFormItemsPosition(indexToMove: number, newIndex: number): void {
+    const updatedFormItems = this.formItems.splice(indexToMove, 1)[0];
+    this.formItems.splice(newIndex, 0, updatedFormItems);
   }
 
   private getFormBuilderChoices(): void {
@@ -117,6 +126,33 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         type: 'Text Input',
       },
     ];
+  }
+
+  private subscribeToFormFieldEvents(): void {
+    this.componentRef.instance.componentAction
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.componentIsDestroyed$)
+      )
+      .subscribe(data => {
+        const componentInstance = data.component;
+        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
+        switch (data.action) {
+          case 'move':
+            const componentPosition = data.direction === 'up' ?
+              componentInstanceIndex - data.placement : componentInstanceIndex + data.placement;
+            this.formQuestionnaireRef.move(componentInstance.hostView, componentPosition);
+            const newComponentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
+            this.moveFormItemsPosition(componentInstanceIndex, newComponentInstanceIndex);
+            this.assignFieldNewIndex();
+            break;
+          case 'delete':
+            this.formQuestionnaireRef.remove(componentInstanceIndex);
+            this.formItems.splice(componentInstanceIndex, 1);
+            this.assignFieldNewIndex();
+            break;
+        }
+      });
   }
 
   ngOnDestroy() {
