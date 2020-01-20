@@ -12,9 +12,22 @@
             <h2>You have not yet selected any fields!</h2>
             <p>Select from the options from the toolbox on your left to get started.</p>
         </div>
+
         <ng-template #formQuestionnaire>
-            <div style="height: 50px;">
-                <button (click)="generateForm()" style="float: right" color="primary" mat-raised-button>Generate Form</button>
+            <div class="form-options-container">
+                <ng-container *ngIf="changesWereMade; else saveFinished">
+                    <div class="loader-container">
+                        <mat-spinner [diameter]="25"></mat-spinner>
+                        <span>Saving changes...</span>
+                    </div>
+                </ng-container>
+                <ng-template #saveFinished>
+                    <div id="form-builder-header-container">
+                        <mat-icon>check</mat-icon>
+                        <h4>Changes were save in your browser's storage</h4>
+                        <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
+                    </div>
+                </ng-template>
             </div>
         </ng-template>
     </div>

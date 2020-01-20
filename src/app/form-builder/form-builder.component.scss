@@ -1,12 +1,39 @@
-#form-container{
+#form-container {
     background: #e6e6e6;
     padding: 16px;
     width: 80%;
+
+    .form-options-container {
+        align-items: center;
+        display: flex;
+        height: 50px;
+        margin-bottom: 10px;
+
+
+        .loader-container {
+            align-items: center;
+            display: flex;
+
+            span {
+                margin: 0 10px;
+            }
+        }
+
+        #form-builder-header-container {
+            align-items: center;
+            display: flex;
+            width: 100%;
+
+            button {
+                margin-left: auto
+            }
+        }
+    }
 }
 
 #form-builder-container {
     background: #f4f4f4;
-    height: 100vh; 
+    height: 100vh;
     padding: 16px;
     width: 20%;
 
@@ -19,6 +46,6 @@
         #form-field-options-icon {
             font-size: 22px;
             margin-right: 5px;
-        }        
+        }
     }
 }

@@ -30,6 +30,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
+  public changesWereMade: boolean;
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
 
@@ -54,9 +55,11 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
+    this.saveFormToLocalStorage();
   }
 
   public generateForm(): void {
+    this.saveFormToLocalStorage();
     const generatedForm: IGeneratedForm = {} as IGeneratedForm;
     generatedForm.fields = this.formFields;
   }
@@ -81,16 +84,12 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formItems.forEach((field, index) => {
       field.instance.componentPosition = index;
     });
+    this.saveFormToLocalStorage();
   }
 
   private fieldTypeHasChoices(fieldType: string): boolean {
     const fieldsWithChoices = ['RadioButtonComponent', 'DropdownComponent', 'CheckboxComponent'];
     return fieldsWithChoices.includes(fieldType);
-  }
-
-  private moveFormItemsPosition(indexToMove: number, newIndex: number): void {
-    const updatedFormItems = this.formItems.splice(indexToMove, 1)[0];
-    this.formItems.splice(newIndex, 0, updatedFormItems);
   }
 
   private getFormBuilderChoices(): void {
@@ -127,6 +126,22 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       },
     ];
   }
+
+  private moveFormItemsPosition(indexToMove: number, newIndex: number): void {
+    const updatedFormItems = this.formItems.splice(indexToMove, 1)[0];
+    this.formItems.splice(newIndex, 0, updatedFormItems);
+  }
+
+  private saveFormToLocalStorage(): void {
+    this.changesWereMade = true;
+    localStorage.setItem('form', JSON.stringify(this.formFields));
+    if (this.changesWereMade) {
+      setTimeout(() => {
+        this.changesWereMade = false;
+      }, 350);
+    }
+  }
+
 
   private subscribeToFormFieldEvents(): void {
     this.componentRef.instance.componentAction
