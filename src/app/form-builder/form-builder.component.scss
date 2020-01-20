@@ -1,51 +1,59 @@
-#form-container {
-    background: #e6e6e6;
-    padding: 16px;
-    width: 80%;
+#main-container {
+    display: flex;
 
-    .form-options-container {
-        align-items: center;
-        display: flex;
-        height: 50px;
-        margin-bottom: 10px;
+    #form-container {
+        background: #e6e6e6;
+        padding: 16px;
+        width: 100%;
 
-
-        .loader-container {
+        .form-options-container {
             align-items: center;
             display: flex;
+            height: 50px;
+            margin-bottom: 10px;
 
-            span {
-                margin: 0 10px;
+            .loader-container {
+                align-items: center;
+                display: flex;
+
+                span {
+                    margin: 0 10px;
+                }
+            }
+
+            #form-builder-header-container {
+                align-items: center;
+                display: flex;
+                width: 100%;
+
+                button {
+                    margin-left: auto
+                }
             }
         }
 
-        #form-builder-header-container {
-            align-items: center;
-            display: flex;
-            width: 100%;
-
-            button {
-                margin-left: auto
-            }
+        .form-container-items {
+            margin-left: 25%;
         }
     }
-}
 
-#form-builder-container {
-    background: #f4f4f4;
-    height: 100vh;
-    padding: 16px;
-    width: 20%;
+    #form-builder-container {
+        background: #f4f4f4;
+        height: 100vh;
+        padding: 16px;
+        position: fixed;
+        width: 20%;
 
-    #form-field-options {
-        align-items: center;
-        display: flex;
-        height: 2rem;
-        margin-bottom: 5px;
+        #form-field-options {
+            align-items: center;
+            display: flex;
+            height: 2rem;
+            margin-bottom: 5px;
 
-        #form-field-options-icon {
-            font-size: 22px;
-            margin-right: 5px;
+            #form-field-options-icon {
+                font-size: 22px;
+                margin-right: 5px;
+            }
         }
     }
 }

@@ -4,7 +4,11 @@
             <span> {{ componentPosition + 1. }} </span>
             <mat-form-field color="primary" [floatLabel]="'never'">
                 <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
-                <textarea matInput readonly="true" type="text"></textarea>
+                <textarea 
+                    matInput
+                    readonly="true"
+                    rows="1"
+                    type="text"></textarea>
             </mat-form-field>
         </div>
         <div class="field-action-btn-container">

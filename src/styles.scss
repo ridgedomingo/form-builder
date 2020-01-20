@@ -22,6 +22,10 @@ body {
     }
 }
 
+.check-icon {
+    color: green;
+}
+
 .required:after {
     content: " *";
     color: red;
@@ -39,11 +43,16 @@ mat-label {
     background-color: #f5f5f5;
     border-radius: 5px;
     display: flex;
+    margin-left: 25%;
     margin-bottom: 10px;
     padding: 16px;
 
     .field-options-container {
         margin-left: 15px;
+    }
+
+    .mat-form-field-label-wrapper {
+        font-weight: 100;
     }
 }
 
@@ -59,6 +68,7 @@ mat-label {
 }
 
 .form-field-and-label {
+    font-weight: 100;
     line-height: 2rem;
     width: 75%;
 }
@@ -74,7 +84,7 @@ mat-label {
 }
 
 mat-icon {
-    color: #424242;
+    color: #848484;
     vertical-align: middle;
 }
 
@@ -118,5 +128,6 @@ mat-icon.show-on-hover {
 }
 
 .mat-radio-outer-circle {
-    border-color: #000000
+    border-color: #000000;
+    border-width: 1px !important;
 }

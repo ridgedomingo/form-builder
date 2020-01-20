@@ -1,4 +1,4 @@
-<div style="display: flex">
+<div id="main-container">
     <div id="form-builder-container">
         <h2>Toolbox</h2>
         <hr>
@@ -8,13 +8,13 @@
         </div>
     </div>
     <div id="form-container">
-        <div *ngIf="noSelectionMade; else formQuestionnaire">
+        <div *ngIf="noSelectionMade; else formQuestionnaire" class="form-container-items">
             <h2>You have not yet selected any fields!</h2>
             <p>Select from the options from the toolbox on your left to get started.</p>
         </div>
 
         <ng-template #formQuestionnaire>
-            <div class="form-options-container">
+            <div class="form-options-container form-container-items">
                 <ng-container *ngIf="changesWereMade; else saveFinished">
                     <div class="loader-container">
                         <mat-spinner [diameter]="25"></mat-spinner>
@@ -23,7 +23,7 @@
                 </ng-container>
                 <ng-template #saveFinished>
                     <div id="form-builder-header-container">
-                        <mat-icon>check</mat-icon>
+                        <mat-icon class="check-icon">check</mat-icon>
                         <h4>Changes were save in your browser's storage</h4>
                         <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
                     </div>
