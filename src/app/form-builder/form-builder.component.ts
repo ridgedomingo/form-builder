@@ -1,4 +1,6 @@
-import { Component, ComponentFactoryResolver, OnInit, OnDestroy, ViewContainerRef, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation } from '@angular/core';
+
+import { FormControl } from '@angular/forms';
 
 import {
   CheckboxComponent, DropdownComponent, InputFieldComponent,
@@ -6,7 +8,7 @@ import {
 } from '../form-fields/index';
 
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
 interface IFormFields {
   choices?: Array<string>;
   index: number;
@@ -16,12 +18,14 @@ interface IFormFields {
 }
 
 interface IGeneratedForm {
+  name: string;
   fields: Array<IFormFields>;
 }
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss']
+  styleUrls: ['./form-builder.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 
@@ -30,17 +34,21 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
+  public formName: string;
+  public formTitleControl: FormControl;
   public changesWereMade: boolean;
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
+  private formTitleCounter: number;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
   ) {
+    this.setPageDefaultValues();
   }
 
   ngOnInit() {
-    this.getFormBuilderChoices();
+    this.subscribeToFormNameValueChanges();
   }
 
   public get noSelectionMade(): boolean {
@@ -55,13 +63,14 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
-    this.saveFormToLocalStorage();
+    this.generateForm();
   }
 
   public generateForm(): void {
-    this.saveFormToLocalStorage();
     const generatedForm: IGeneratedForm = {} as IGeneratedForm;
     generatedForm.fields = this.formFields;
+    generatedForm.name = this.formName;
+    this.saveFormToLocalStorage(generatedForm);
   }
 
   private get formFields(): Array<IFormFields> {
@@ -84,7 +93,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formItems.forEach((field, index) => {
       field.instance.componentPosition = index;
     });
-    this.saveFormToLocalStorage();
+    this.generateForm();
   }
 
   private fieldTypeHasChoices(fieldType: string): boolean {
@@ -92,7 +101,8 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     return fieldsWithChoices.includes(fieldType);
   }
 
-  private getFormBuilderChoices(): void {
+  private setPageDefaultValues(): void {
+    this.formTitleCounter = 1;
     this.formBuilderChoices = [
       {
         component: CheckboxComponent,
@@ -125,6 +135,8 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         type: 'Text Input',
       },
     ];
+    this.formName = 'Untitled Form';
+    this.formTitleControl = new FormControl(this.formName);
   }
 
   private moveFormItemsPosition(indexToMove: number, newIndex: number): void {
@@ -132,9 +144,9 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formItems.splice(newIndex, 0, updatedFormItems);
   }
 
-  private saveFormToLocalStorage(): void {
+  private saveFormToLocalStorage(form: IGeneratedForm): void {
     this.changesWereMade = true;
-    localStorage.setItem('form', JSON.stringify(this.formFields));
+    localStorage.setItem(form.name, JSON.stringify(form));
     if (this.changesWereMade) {
       setTimeout(() => {
         this.changesWereMade = false;
@@ -167,6 +179,20 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
             this.assignFieldNewIndex();
             break;
         }
+      });
+  }
+
+  private subscribeToFormNameValueChanges(): void {
+    this.formTitleControl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.componentIsDestroyed$)
+      )
+      .subscribe(newFormName => {
+        localStorage.removeItem(this.formName);
+        this.formName = newFormName;
+        this.generateForm();
       });
   }
 

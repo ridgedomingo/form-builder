@@ -3,6 +3,7 @@
 
     #form-container {
         background: #e6e6e6;
+        height: 100vh;
         padding: 16px;
         width: 100%;
 
@@ -11,6 +12,27 @@
             display: flex;
             height: 50px;
             margin-bottom: 10px;
+        }
+
+        #form-name {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            width: 25%;
+
+            input {
+                background: none;
+                border: none;
+                color: #C2185B;
+                font-size: 18px;
+            }
+
+        }
+
+        #form-actions {
+            display: flex;
+            justify-content: flex-end;
+            width: 75%;
 
             .loader-container {
                 align-items: center;
@@ -24,10 +46,11 @@
             #form-builder-header-container {
                 align-items: center;
                 display: flex;
+                justify-content: flex-end;
                 width: 100%;
 
-                button {
-                    margin-left: auto
+                span {
+                    margin-right: 15px;
                 }
             }
         }

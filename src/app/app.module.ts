@@ -1,12 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormFieldsModule } from './form-fields/form-fields.module';
-import { MatButtonModule, MatIconModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
 
 import { FormBuilderComponent } from './form-builder/form-builder.component';
 
@@ -22,7 +23,9 @@ import { FormBuilderComponent } from './form-builder/form-builder.component';
     FormFieldsModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatInputModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

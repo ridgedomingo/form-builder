@@ -15,19 +15,25 @@
 
         <ng-template #formQuestionnaire>
             <div class="form-options-container form-container-items">
-                <ng-container *ngIf="changesWereMade; else saveFinished">
-                    <div class="loader-container">
-                        <mat-spinner [diameter]="25"></mat-spinner>
-                        <span>Saving changes...</span>
-                    </div>
-                </ng-container>
-                <ng-template #saveFinished>
-                    <div id="form-builder-header-container">
-                        <mat-icon class="check-icon">check</mat-icon>
-                        <h4>Changes were save in your browser's storage</h4>
-                        <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
-                    </div>
-                </ng-template>
+                <div id="form-name">
+                    <mat-icon>description</mat-icon>
+                    <input [formControl]="formTitleControl" matInput type="text" [value]="formTitleControl.value">
+                </div>
+                <div id="form-actions">
+                    <ng-container *ngIf="changesWereMade; else saveFinished">
+                        <div class="loader-container">
+                            <mat-spinner [diameter]="25"></mat-spinner>
+                            <span>Saving changes...</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #saveFinished>
+                        <div id="form-builder-header-container">
+                            <mat-icon class="check-icon">check</mat-icon>
+                            <span>Changes were save in your browser's storage</span>
+                            <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
+                        </div>
+                    </ng-template>
+                </div>
             </div>
         </ng-template>
     </div>
