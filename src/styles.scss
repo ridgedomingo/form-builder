@@ -132,3 +132,11 @@ mat-icon.show-on-hover {
     border-color: #000000;
     border-width: 1px !important;
 }
+
+.mat-menu-panel {
+    background: #f4f4f4!important;
+
+    .mat-menu-item {
+        color: #000000 !important;
+    }
+}
