@@ -64,6 +64,7 @@ mat-label {
     flex-wrap: wrap;
     height: auto;
     margin-bottom: 15px;
+    margin-left: 25%;
     padding: 16px;
     width: 360px;
 }
@@ -134,9 +135,19 @@ mat-icon.show-on-hover {
 }
 
 .mat-menu-panel {
-    background: #f4f4f4!important;
+    background: #f4f4f4 !important;
 
     .mat-menu-item {
         color: #000000 !important;
+    }
+}
+
+.mat-menu-content {
+    align-items: center;
+    display: flex;
+    margin-left: 10px;
+
+    mat-icon {
+        margin-right: 5px;
     }
 }

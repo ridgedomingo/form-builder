@@ -18,7 +18,9 @@
                 <div id="form-name">
                     <mat-icon [matMenuTriggerFor]="menu">description</mat-icon>
                     <mat-menu #menu="matMenu">
-                        <button (click)="createNewForm()" mat-menu-item>New </button>
+                        <div (click)="createNewForm()">
+                            <mat-icon>create_new_folder</mat-icon>New
+                        </div>
                     </mat-menu>
                     <input [formControl]="formTitleControl" matInput type="text" [value]="formTitleControl.value">
                 </div>
