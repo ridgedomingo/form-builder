@@ -8,6 +8,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
   @Output() componentAction: EventEmitter<any> = new EventEmitter();
   protected componentPosition: number;
   protected componentRef: any;
+  protected fieldId: string;
   protected fieldSettingsForm: FormGroup;
   protected fieldType: string;
   protected isRequired: boolean;
@@ -61,6 +62,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
   private showFieldSettings(): void {
     this.makingChanges = true;
     this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
+    this.fieldSettingsForm.controls.title.setValue(this.title);
   }
 
 }

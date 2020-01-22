@@ -15,6 +15,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     protected componentRef: any;
     protected currentFieldOptions: any;
     protected currentFieldOptionsValue: Array<string> = [];
+    protected fieldId: string;
     protected fieldSettingsForm: FormGroup;
     protected fieldType: string;
     protected initialFieldOptions: any;
@@ -157,6 +158,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.finishedModifyingFieldSettings$ = new Subject();
         this.makingChanges = true;
         this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
+        this.fieldSettingsForm.controls.title.setValue(this.title);
         this.setChoicesInputFieldWidth();
     }
 

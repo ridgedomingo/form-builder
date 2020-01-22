@@ -65,6 +65,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
     this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
     this.componentRef.instance.title = `Question ${this.questionCounter}`;
+    this.componentRef.instance.fieldId = this.generateFormFieldId();
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
     this.generateForm();
@@ -91,7 +92,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       const fieldType = instance.fieldType.split('Component');
       formFields.push({
         ...(this.fieldTypeHasChoices(instance.fieldType) ? { choices: instance.currentFieldOptionsValue } : {}),
-        id: this.generateFormFieldId(),
+        id: instance.fieldId,
         index: instance.componentPosition,
         isRequired: instance.isRequired ? true : false,
         title: instance.title,
