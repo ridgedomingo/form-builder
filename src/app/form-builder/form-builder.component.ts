@@ -11,6 +11,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
 interface IFormFields {
   choices?: Array<string>;
+  id: string;
   index: number;
   isRequired: boolean;
   title: string;
@@ -90,6 +91,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       const fieldType = instance.fieldType.split('Component');
       formFields.push({
         ...(this.fieldTypeHasChoices(instance.fieldType) ? { choices: instance.currentFieldOptionsValue } : {}),
+        id: this.generateFormFieldId(),
         index: instance.componentPosition,
         isRequired: instance.isRequired ? true : false,
         title: instance.title,
@@ -109,6 +111,10 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   private fieldTypeHasChoices(fieldType: string): boolean {
     const fieldsWithChoices = ['RadioButtonComponent', 'DropdownComponent', 'CheckboxComponent'];
     return fieldsWithChoices.includes(fieldType);
+  }
+
+  private generateFormFieldId(): string {
+    return [...Array(7)].map(() => Math.random().toString(36)[2]).join('');
   }
 
   private setPageDefaultValues(): void {
