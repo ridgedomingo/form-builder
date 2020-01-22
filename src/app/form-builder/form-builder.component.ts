@@ -40,6 +40,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
   private formTitleCounter: number;
+  private questionCounter: number;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -56,11 +57,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   public addField(fieldComponent: any): void {
+    this.questionCounter = this.questionCounter + 1;
     const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(fieldComponent);
     this.componentRef = this.formQuestionnaireRef.createComponent(formFieldComponentFactory);
     this.componentRef.instance.componentRef = this.componentRef;
     this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
     this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
+    this.componentRef.instance.title = `Question ${this.questionCounter}`;
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
     this.generateForm();
@@ -109,6 +112,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private setPageDefaultValues(): void {
+    this.questionCounter = 0;
     this.formTitleCounter = 1;
     this.formBuilderChoices = [
       {

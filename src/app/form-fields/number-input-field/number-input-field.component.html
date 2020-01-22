@@ -1,7 +1,7 @@
 <ng-container #inputFieldContainer>
     <div *ngIf="!makingChanges; else inputFieldSettings" class="field-container">
         <div class="form-field-and-label">
-            <span> {{ componentPosition + 1. }} </span>
+            <span> {{ componentPosition + 1 }} . </span>
             <mat-form-field color="primary" [floatLabel]="'never'">
                 <mat-label [ngClass]="{'required': isRequired}">{{ title }}</mat-label>
                 <input matInput readonly="true" type="text">

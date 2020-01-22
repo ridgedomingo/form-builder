@@ -31,7 +31,6 @@ export class NumberInputFieldComponent extends InputFormFieldsBaseComponent impl
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Number Input';
   }
 
 }

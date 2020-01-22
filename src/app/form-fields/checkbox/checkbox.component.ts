@@ -23,7 +23,6 @@ export class CheckboxComponent extends FormFieldsWithOptionsBaseComponent implem
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Checkbox';
   }
 
 }

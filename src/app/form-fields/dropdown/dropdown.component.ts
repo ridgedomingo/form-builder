@@ -24,7 +24,6 @@ export class DropdownComponent extends FormFieldsWithOptionsBaseComponent implem
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Dropdown';
     this.currentlySelected = 'Option 1';
   }
 

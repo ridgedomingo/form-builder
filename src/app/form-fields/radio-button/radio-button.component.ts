@@ -23,7 +23,6 @@ export class RadioButtonComponent extends FormFieldsWithOptionsBaseComponent imp
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Radio button';
   }
 
 }

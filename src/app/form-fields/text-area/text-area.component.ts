@@ -32,7 +32,6 @@ export class TextAreaComponent extends InputFormFieldsBaseComponent implements O
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Textarea';
   }
 
 }

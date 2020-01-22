@@ -33,7 +33,6 @@ export class InputFieldComponent extends InputFormFieldsBaseComponent implements
 
   private setDefaultFieldValues(): void {
     this.makingChanges = false;
-    this.title = 'Text Input';
   }
 
 }
