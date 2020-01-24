@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,11 +6,17 @@ import { FormGroup } from '@angular/forms';
 })
 export class InputFormFieldsBaseComponent implements OnInit {
   @Output() componentAction: EventEmitter<any> = new EventEmitter();
+  @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
+  protected availableFormFieldsWithChoices: Array<any> = [];
   protected componentPosition: number;
   protected componentRef: any;
+  protected currentlySelectedField: any;
+  protected selectedFormFieldForFieldVisibility: any;
+  protected currentlySelectedOption: any;
   protected fieldId: string;
   protected fieldSettingsForm: FormGroup;
   protected fieldType: string;
+  protected fieldIsVisible: boolean;
   protected isRequired: boolean;
   protected makingChanges: boolean;
   protected title: string;
@@ -45,6 +51,25 @@ export class InputFormFieldsBaseComponent implements OnInit {
     this.changeComponentPosition();
   }
 
+  protected setSelectedOptionForFieldVisibility(selectedOption: any): void {
+    this.currentlySelectedOption = selectedOption;
+  }
+
+  protected showFieldVisibilitySettings(value: boolean): void {
+    this.currentlySelectedField = this.currentlySelectedField ? this.currentlySelectedField : 'Select';
+    this.fieldIsVisible = value;
+    const data = {
+      fieldIsVisible: value,
+      component: this.componentRef
+    };
+    this.showFieldVisibilityForm.emit(data);
+  }
+
+  protected getSelectedComponentToTriggerFieldVisibility(field: any): void {
+    this.currentlySelectedOption = this.currentlySelectedOption ? this.currentlySelectedOption : 'Is Equal to';
+    this.selectedFormFieldForFieldVisibility = field;
+  }
+
   private changeComponentPosition(): void {
     const newComponentPosition = this.fieldSettingsForm.controls.position.value;
     if (newComponentPosition !== this.componentPosition + 1) {
@@ -61,6 +86,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
 
   private showFieldSettings(): void {
     this.makingChanges = true;
+    this.fieldIsVisible = this.fieldSettingsForm.controls.fieldVisible.value;
     this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
     this.fieldSettingsForm.controls.title.setValue(this.title);
   }

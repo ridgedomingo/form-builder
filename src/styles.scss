@@ -26,6 +26,10 @@ body {
     color: green;
 }
 
+.disable-clicks {
+    pointer-events: none;
+}
+
 .required:after {
     content: " *";
     color: red;
@@ -33,6 +37,44 @@ body {
 
 mat-label {
     color: #000000;
+}
+
+.form-field-select {
+    // width: 150px;
+
+    .mat-form-field-underline {
+        display: none !important;
+    }
+}
+
+#field-visibility-settings-form {
+
+    .mat-form-field-label-wrapper {
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        right: 0;
+        text-align: center;
+        top: 0;
+    }
+}
+
+.custom-dropdown {
+    border: 1px solid #C2185B;
+    border-radius: 4px;
+    height: 30px;
+
+    .mat-select-trigger .mat-select-arrow-wrapper {
+        background: #c2185b;
+        height: 30px;
+    }
+
+    .mat-select-value {
+        color: #000000;
+        font-weight: 100;
+        text-align: center;
+        vertical-align: middle;
+    }
 }
 
 .mat-form-field-underline {
@@ -59,14 +101,14 @@ mat-label {
 
 .field-settings-container {
     background: #f5f5f5;
-    box-shadow: #e6e6e6 0px 10px 10px;
+    box-shadow: rgba(194, 24, 91, 0.5) 0px 1px 10px; 
+    border-radius: 5px;
     display: flex;
     flex-wrap: wrap;
     height: auto;
     margin-bottom: 15px;
     margin-left: 25%;
     padding: 16px;
-    width: 360px;
 }
 
 .form-field-and-label {
@@ -100,6 +142,10 @@ mat-icon.show-on-hover {
 
 .mat-checkbox-frame {
     border-color: #000000;
+}
+
+.mat-checkbox-checkmark-path {
+    stroke: #ffffff !important;
 }
 
 .mat-checkbox-disabled .mat-checkbox-label {

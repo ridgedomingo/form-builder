@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class FormFieldsWithOptionsBaseComponent implements OnInit {
     @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
     @Output() componentAction: EventEmitter<any> = new EventEmitter();
+    @Output() showFieldVisibilityForm: EventEmitter<boolean> = new EventEmitter();
     protected componentPosition: number;
     protected componentRef: any;
     protected currentFieldOptions: any;

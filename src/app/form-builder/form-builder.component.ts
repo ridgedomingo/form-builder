@@ -68,6 +68,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef.instance.fieldId = this.generateFormFieldId();
     this.formItems.push(this.componentRef);
     this.subscribeToFormFieldEvents();
+    this.subscribeToFieldVisibilityActionEvents();
     this.generateForm();
   }
 
@@ -116,6 +117,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private generateFormFieldId(): string {
     return [...Array(7)].map(() => Math.random().toString(36)[2]).join('');
+  }
+
+  private getFormFieldsWithChoices(component: any): void {
+    component.instance.availableFormFieldsWithChoices = this.formItems.filter(field => {
+      return this.fieldTypeHasChoices(field.instance.fieldType) && field.fieldId !== component.instance.fieldId
+        && field.instance.componentPosition < component.instance.componentPosition;
+    });
   }
 
   private setPageDefaultValues(): void {
@@ -172,6 +180,18 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  private subscribeToFieldVisibilityActionEvents(): void {
+    this.componentRef.instance.showFieldVisibilityForm
+      .pipe(distinctUntilChanged(),
+        takeUntil(this.componentIsDestroyed$))
+      .subscribe(data => {
+        if (!data.fieldIsVisible) {
+          this.componentRef = data.component;
+          this.getFormFieldsWithChoices(data.component);
+        }
+      });
+  }
 
   private subscribeToFormFieldEvents(): void {
     this.componentRef.instance.componentAction

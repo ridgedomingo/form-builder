@@ -24,6 +24,7 @@ export class InputFieldComponent extends InputFormFieldsBaseComponent implements
 
   private initializeForm(): void {
     this.fieldSettingsForm = this.formBuilder.group({
+      fieldVisible: [true],
       isRequired: [false],
       position: ['', Validators.required],
       title: ['', Validators.required],
@@ -32,7 +33,7 @@ export class InputFieldComponent extends InputFormFieldsBaseComponent implements
   }
 
   private setDefaultFieldValues(): void {
-    this.makingChanges = false;
-  }
+  this.makingChanges = false;
+}
 
 }
