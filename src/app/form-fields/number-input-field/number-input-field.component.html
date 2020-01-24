@@ -13,29 +13,7 @@
     </div>
 
     <ng-template #inputFieldSettings>
-        <div class="field-settings-container">
-            <form [formGroup]="fieldSettingsForm" style="width: 100%;">
-                <div>
-                    <mat-form-field color="primary">
-                        <mat-label>Title</mat-label>
-                        <input formControlName="title" matInput type="text">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field color="primary">
-                        <mat-label>Position</mat-label>
-                        <input formControlName="position" matInput type="number">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-label style="margin-right: 5px;">Required</mat-label>
-                    <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
-                </div>
-                <div class="action-btn-container">
-                    <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
-                    <button (click)="saveFieldSettings()" color="primary" mat-raised-button type="button">Okay</button>
-                </div>
-            </form>
-        </div>
+        <app-field-settings-form [formFieldVisibilityTriggers]="availableFormFieldsWithChoices" [pageData]="fieldSettingsData" (fieldSettingsUpdatedData)="setUpdatedFieldSettingsData($event)"
+            (showFieldVisibilityForm)="emitFieldVisibilityFormValues($event)" (makingChanges)="getMakingChangesState($event)"></app-field-settings-form>
     </ng-template>
 </ng-container>

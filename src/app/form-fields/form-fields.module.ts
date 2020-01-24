@@ -11,6 +11,7 @@ import { FormFieldsActionModule } from '../form-field-actions/form-field-actions
 
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
+import { FieldSettingsFormComponent } from '../field-settings-form/field-settings-form.component';
 import { InputFieldComponent } from './input-field/input-field.component';
 import { NumberInputFieldComponent } from './number-input-field/number-input-field.component';
 import { RadioButtonComponent } from './radio-button/radio-button.component';
@@ -20,6 +21,7 @@ import { TextAreaComponent } from './text-area/text-area.component';
     declarations: [
         CheckboxComponent,
         DropdownComponent,
+        FieldSettingsFormComponent,
         InputFieldComponent,
         NumberInputFieldComponent,
         RadioButtonComponent,

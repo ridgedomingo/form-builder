@@ -12,9 +12,9 @@ export class InputFormFieldsBaseComponent implements OnInit {
   protected componentRef: any;
   protected currentlySelectedField: any;
   protected selectedFormFieldForFieldVisibility: any;
-  protected currentlySelectedOption: any;
   protected fieldId: string;
   protected fieldSettingsForm: FormGroup;
+  protected fieldSettingsData: any;
   protected fieldType: string;
   protected fieldIsVisible: boolean;
   protected isRequired: boolean;
@@ -24,6 +24,16 @@ export class InputFormFieldsBaseComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  protected emitFieldVisibilityFormValues(values: any): void { this.showFieldVisibilityForm.emit(values); }
+
+  protected getMakingChangesState(makingChanges: boolean): void { this.makingChanges = makingChanges; }
+
+  protected setUpdatedFieldSettingsData(data: any): void {
+    this.title = data.title.value;
+    this.isRequired = data.isRequired.value;
+    this.changeComponentPosition(data.position.value);
   }
 
   protected triggerComponentAction(action: string, direction?: string): void {
@@ -40,38 +50,8 @@ export class InputFormFieldsBaseComponent implements OnInit {
     }
   }
 
-  protected hideFieldSettings(): void {
-    this.makingChanges = false;
-  }
-  protected saveFieldSettings(): void {
-    const formControls = this.fieldSettingsForm.controls;
-    this.makingChanges = false;
-    this.title = formControls.title.value;
-    this.isRequired = formControls.isRequired.value;
-    this.changeComponentPosition();
-  }
-
-  protected setSelectedOptionForFieldVisibility(selectedOption: any): void {
-    this.currentlySelectedOption = selectedOption;
-  }
-
-  protected showFieldVisibilitySettings(value: boolean): void {
-    this.currentlySelectedField = this.currentlySelectedField ? this.currentlySelectedField : 'Select';
-    this.fieldIsVisible = value;
-    const data = {
-      fieldIsVisible: value,
-      component: this.componentRef
-    };
-    this.showFieldVisibilityForm.emit(data);
-  }
-
-  protected getSelectedComponentToTriggerFieldVisibility(field: any): void {
-    this.currentlySelectedOption = this.currentlySelectedOption ? this.currentlySelectedOption : 'Is Equal to';
-    this.selectedFormFieldForFieldVisibility = field;
-  }
-
-  private changeComponentPosition(): void {
-    const newComponentPosition = this.fieldSettingsForm.controls.position.value;
+  private changeComponentPosition(newPosition: number): void {
+    const newComponentPosition = newPosition;
     if (newComponentPosition !== this.componentPosition + 1) {
       const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
       const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
@@ -86,9 +66,11 @@ export class InputFormFieldsBaseComponent implements OnInit {
 
   private showFieldSettings(): void {
     this.makingChanges = true;
-    this.fieldIsVisible = this.fieldSettingsForm.controls.fieldVisible.value;
-    this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
-    this.fieldSettingsForm.controls.title.setValue(this.title);
+    this.fieldSettingsData = {
+      componentPosition: this.componentPosition,
+      componentRef: this.componentRef,
+      title: this.title
+    };
   }
 
 }
