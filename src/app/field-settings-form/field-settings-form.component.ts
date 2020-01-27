@@ -23,7 +23,6 @@ export class FieldSettingsFormComponent implements OnInit {
   protected fieldType: string;
   protected fieldIsVisible: boolean;
   protected isRequired: boolean;
-  // protected makingChanges: boolean;
   protected title: string;
 
 
@@ -39,11 +38,13 @@ export class FieldSettingsFormComponent implements OnInit {
   public hideFieldSettings(): void { this.makingChanges.emit(false); }
 
   public saveFieldSettings(): void {
-    this.makingChanges.emit(false);
     this.fieldSettingsUpdatedData.emit(this.fieldSettingsForm.controls);
   }
 
   public setFieldValues(data: any): void {
+    if (data.hasOwnProperty('fieldSettingsForm')) {
+      this.fieldSettingsForm = data.fieldSettingsForm;
+    }
     this.fieldIsVisible = this.fieldSettingsForm.controls.fieldVisible.value;
     this.fieldSettingsForm.controls.position.setValue(data.componentPosition + 1);
     this.fieldSettingsForm.controls.title.setValue(data.title);

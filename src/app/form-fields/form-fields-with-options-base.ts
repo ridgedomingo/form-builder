@@ -11,19 +11,24 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class FormFieldsWithOptionsBaseComponent implements OnInit {
     @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
     @Output() componentAction: EventEmitter<any> = new EventEmitter();
-    @Output() showFieldVisibilityForm: EventEmitter<boolean> = new EventEmitter();
+    @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
+    protected availableFormFieldsWithChoices: Array<any> = [];
     protected componentPosition: number;
     protected componentRef: any;
     protected currentFieldOptions: any;
     protected currentFieldOptionsValue: Array<string> = [];
+    protected currentlySelectedField: any;
+    protected initialFieldOptions: any;
+    protected selectedFormFieldForFieldVisibility: any;
     protected fieldId: string;
     protected fieldSettingsForm: FormGroup;
+    protected fieldSettingsData: any;
     protected fieldType: string;
-    protected initialFieldOptions: any;
-    protected inputValueLength: number;
+    protected fieldIsVisible: boolean;
     protected isRequired: boolean;
     protected makingChanges: boolean;
     protected title: string;
+
 
     protected finishedModifyingFieldSettings$: Subject<boolean>;
     protected optionsCounter: number;
@@ -44,7 +49,15 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         options.push(
             new FormControl(`Option ${this.optionsCounter}`)
         );
+        this.fieldSettingsData = {
+            componentPosition: this.componentPosition,
+            componentRef: this.componentRef,
+            fieldSettingsForm: this.fieldSettingsForm,
+            title: this.title
+        };
     }
+
+    protected emitFieldVisibilityFormValues(values: any): void { this.showFieldVisibilityForm.emit(values); }
 
     protected hideFieldSettings(): void {
         this.makingChanges = false;
@@ -60,7 +73,8 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             const data = {
                 action,
                 component: this.componentRef,
-                direction
+                direction,
+                placement: 1
             };
             this.componentAction.emit(data);
         }
@@ -71,17 +85,16 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         options.removeAt(index);
     }
 
-    protected saveFieldSettings(): void {
-        const formControls = this.fieldSettingsForm.controls;
-        const options = this.fieldSettingsForm.controls.options as FormArray;
+    protected setUpdatedFieldSettingsData(data: any): void {
+        const options = data.options as FormArray;
         this.createCopyOfCurrentFieldOptions(options.controls);
+        this.title = data.title.value;
+        this.isRequired = data.isRequired.value;
         this.makingChanges = false;
-        this.title = formControls.title.value;
-        this.isRequired = formControls.isRequired.value;
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
-        this.changeComponentPosition();
+        this.changeComponentPosition(data.position.value);
     }
 
     protected initializeForm(): void {
@@ -91,6 +104,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             new FormControl('Option 3'),
         ];
         this.fieldSettingsForm = this.formBuilder.group({
+            fieldVisible: [true],
             isRequired: [false],
             position: ['', Validators.required],
             options: new FormArray(this.initialFieldOptions),
@@ -102,8 +116,8 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         this.optionsCounter = options.length;
     }
 
-    private changeComponentPosition(): void {
-        const newComponentPosition = this.fieldSettingsForm.controls.position.value;
+    private changeComponentPosition(newPosition: number): void {
+        const newComponentPosition = newPosition;
         if (newComponentPosition !== this.componentPosition + 1) {
             const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
             const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
@@ -158,8 +172,12 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     private showFieldSettings(): void {
         this.finishedModifyingFieldSettings$ = new Subject();
         this.makingChanges = true;
-        this.fieldSettingsForm.controls.position.setValue(this.componentPosition + 1);
-        this.fieldSettingsForm.controls.title.setValue(this.title);
+        this.fieldSettingsData = {
+            componentPosition: this.componentPosition,
+            componentRef: this.componentRef,
+            fieldSettingsForm: this.fieldSettingsForm,
+            title: this.title
+        };
         this.setChoicesInputFieldWidth();
     }
 

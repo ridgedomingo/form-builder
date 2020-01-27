@@ -16,6 +16,7 @@
             <mat-label style="margin-right: 5px;">Required</mat-label>
             <mat-checkbox [checked]="isRequired" color="primary" formControlName="isRequired"></mat-checkbox>
         </div>
+        <ng-content></ng-content>
         <div>
             <mat-label style="margin-right: 5px;">Always show this field</mat-label>
             <mat-checkbox (change)="showFieldVisibilitySettings($event.checked)" [checked]="fieldIsVisible" color="primary" formControlName="fieldVisible"></mat-checkbox>

@@ -17,24 +17,10 @@
     </div>
 
     <ng-template #fieldSettings>
-        <div class="field-settings-container">
-            <form [formGroup]="fieldSettingsForm" style="width: 100%;">
-                <div>
-                    <mat-form-field color="primary">
-                        <mat-label>Title</mat-label>
-                        <input formControlName="title" matInput type="text">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field color="primary">
-                        <mat-label>Position</mat-label>
-                        <input formControlName="position" matInput type="number">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-label style="margin-right: 5px;">Required</mat-label>
-                    <mat-checkbox [checked]="isRequired" formControlName="isRequired"></mat-checkbox>
-                </div>
+        <app-field-settings-form #fieldSettings [formFieldVisibilityTriggers]="availableFormFieldsWithChoices" [pageData]="fieldSettingsData"
+            (fieldSettingsUpdatedData)="setUpdatedFieldSettingsData($event)" (showFieldVisibilityForm)="emitFieldVisibilityFormValues($event)"
+            (makingChanges)="hideFieldSettings()">
+            <form [formGroup]="fieldSettingsForm">
                 <div>
                     <h4>Choices:</h4>
                     <div *ngFor="let option of fieldSettingsForm.controls.options.controls; let indx = index">
@@ -52,11 +38,7 @@
                         Add Option
                     </div>
                 </div>
-                <div class="action-btn-container">
-                    <button (click)="hideFieldSettings()" mat-raised-button type="button">Cancel</button>
-                    <button (click)="saveFieldSettings()" color="primary" mat-raised-button type="button">Okay</button>
-                </div>
             </form>
-        </div>
+        </app-field-settings-form>
     </ng-template>
 </ng-container>
