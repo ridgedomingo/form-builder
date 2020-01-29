@@ -11,8 +11,10 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 export class FormFieldsWithOptionsBaseComponent implements OnInit {
     @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
     @Output() componentAction: EventEmitter<any> = new EventEmitter();
+    @Output() setFieldChoicesOption: EventEmitter<any> = new EventEmitter();
     @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
     protected availableFormFieldsWithChoices: Array<any> = [];
+    protected choicesOption: Array<any> = [];
     protected componentPosition: number;
     protected componentRef: any;
     protected currentFieldOptions: any;
@@ -86,15 +88,23 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     }
 
     protected setUpdatedFieldSettingsData(data: any): void {
-        const options = data.options as FormArray;
+        if (Object.keys(data.choicesOption).length > 0) {
+            const choicesOptionData = {
+                choicesOption: data.choicesOption,
+                component: this.componentRef
+            };
+            this.setFieldChoicesOption.emit(choicesOptionData);
+        }
+        // this.choicesOption = data.choicesOption;
+        const options = data.formValues.options as FormArray;
         this.createCopyOfCurrentFieldOptions(options.controls);
-        this.title = data.title.value;
-        this.isRequired = data.isRequired.value;
+        this.title = data.FormValues.title.value;
+        this.isRequired = data.FormValues.isRequired.value;
         this.makingChanges = false;
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
-        this.changeComponentPosition(data.position.value);
+        this.changeComponentPosition(data.FormValues.position.value);
     }
 
     protected initializeForm(): void {

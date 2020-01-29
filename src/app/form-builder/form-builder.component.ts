@@ -9,8 +9,18 @@ import {
 
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
+
+interface IChoicesOptionProperties {
+  action: string;
+  targetIds: Array<string>;
+}
+
+interface IChoicesOption {
+  [key: string]: IChoicesOptionProperties;
+}
 interface IFormFields {
   choices?: Array<string>;
+  choicesOption?: IChoicesOption;
   id: string;
   index: number;
   isRequired: boolean;
@@ -32,15 +42,16 @@ interface IGeneratedForm {
 
 export class FormBuilderComponent implements OnInit, OnDestroy {
   @ViewChild('formQuestionnaire', { static: true, read: ViewContainerRef }) formQuestionnaireRef;
+  public changesWereMade: boolean;
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
   public formName: string;
   public formTitleControl: FormControl;
-  public changesWereMade: boolean;
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
   private formTitleCounter: number;
+  private generatedForm: IGeneratedForm;
   private questionCounter: number;
 
   constructor(
@@ -67,6 +78,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.componentRef.instance.title = `Question ${this.questionCounter}`;
     this.componentRef.instance.fieldId = this.generateFormFieldId();
     this.formItems.push(this.componentRef);
+    this.subscribeToChoicesOptionEvents();
     this.subscribeToFormFieldEvents();
     this.subscribeToFieldVisibilityActionEvents();
     this.generateForm();
@@ -93,6 +105,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       const fieldType = instance.fieldType.split('Component');
       formFields.push({
         ...(this.fieldTypeHasChoices(instance.fieldType) ? { choices: instance.currentFieldOptionsValue } : {}),
+        choicesOption: instance.choicesOption,
         id: instance.fieldId,
         index: instance.componentPosition,
         isRequired: instance.isRequired ? true : false,
@@ -172,11 +185,53 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private saveFormToLocalStorage(form: IGeneratedForm): void {
     this.changesWereMade = true;
+    this.generatedForm = form;
     localStorage.setItem(form.name, JSON.stringify(form));
     if (this.changesWereMade) {
       setTimeout(() => {
         this.changesWereMade = false;
       }, 350);
+    }
+  }
+
+  private setFieldChoicesOption(data: any): void {
+    if (Object.keys(this.generatedForm).length > 0) {
+      let targetIds: Array<string> = [];
+      const choicesOption: IChoicesOption = {} as IChoicesOption;
+      const choicesOptionProperties: IChoicesOptionProperties = {} as IChoicesOptionProperties;
+      this.generatedForm.fields.forEach(field => {
+        if (field.id === data.choicesOption[0].fieldId) {
+          const componentIndex = this.formItems.findIndex(item => item.instance.fieldId === field.id);
+          if (field.hasOwnProperty('choicesOption')) {
+            choicesOptionProperties.action = 'show';
+            data.choicesOption.forEach(option => {
+              if (field.choicesOption[option.index] !== undefined) {
+                targetIds = field.choicesOption[option.index].targetIds;
+              }
+              if (!targetIds.includes(option.targetFieldId)) {
+                targetIds.push(option.targetFieldId);
+              }
+              choicesOptionProperties.targetIds = targetIds;
+              choicesOption[option.index] = choicesOptionProperties;
+              field.choicesOption = choicesOption;
+              data.component.instance.choicesOption = choicesOption;
+              this.formItems[componentIndex].instance.choicesOption = choicesOption;
+            });
+          } else {
+            data.choicesOption.forEach(option => {
+              if (!targetIds.includes(option.targetFieldId)) {
+                targetIds.push(option.targetFieldId);
+              }
+              choicesOptionProperties.targetIds = targetIds;
+              choicesOption[option.index] = choicesOptionProperties;
+              field.choicesOption = choicesOption;
+              data.component.instance.choicesOption = choicesOption;
+              this.formItems[componentIndex].instance.choicesOption = choicesOption;
+            });
+          }
+        }
+      });
+      this.saveFormToLocalStorage(this.generatedForm);
     }
   }
 
@@ -189,6 +244,18 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         if (!data.fieldIsVisible) {
           this.componentRef = data.component;
           this.getFormFieldsWithChoices(data.component);
+        }
+      });
+  }
+  private subscribeToChoicesOptionEvents(): void {
+    this.componentRef.instance.setFieldChoicesOption
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.componentIsDestroyed$)
+      )
+      .subscribe(data => {
+        if (data.choicesOption && data.choicesOption.length > 0) {
+          this.setFieldChoicesOption(data);
         }
       });
   }

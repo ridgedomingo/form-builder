@@ -14,16 +14,17 @@ export class FieldSettingsFormComponent implements OnInit {
   @Output() fieldSettingsUpdatedData: EventEmitter<any> = new EventEmitter();
   @Output() makingChanges: EventEmitter<boolean> = new EventEmitter();
   @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
-  protected componentPosition: number;
-  protected componentRef: any;
-  protected currentlySelectedField: any;
-  protected selectedFormFieldForFieldVisibility: any;
-  protected fieldId: string;
-  protected fieldSettingsForm: FormGroup;
-  protected fieldType: string;
-  protected fieldIsVisible: boolean;
-  protected isRequired: boolean;
-  protected title: string;
+  public choicesOption: Array<any> = [];
+  public componentPosition: number;
+  public componentRef: any;
+  public currentlySelectedField: any;
+  public selectedFormFieldForFieldVisibility: any;
+  public fieldId: string;
+  public fieldSettingsForm: FormGroup;
+  public fieldType: string;
+  public fieldIsVisible: boolean;
+  public isRequired: boolean;
+  public title: string;
 
 
   constructor(
@@ -38,13 +39,18 @@ export class FieldSettingsFormComponent implements OnInit {
   public hideFieldSettings(): void { this.makingChanges.emit(false); }
 
   public saveFieldSettings(): void {
-    this.fieldSettingsUpdatedData.emit(this.fieldSettingsForm.controls);
+    const fieldSettingsData = {
+      choicesOption: this.choicesOption,
+      formValues: this.fieldSettingsForm.controls
+    };
+    this.fieldSettingsUpdatedData.emit(fieldSettingsData);
   }
 
   public setFieldValues(data: any): void {
     if (data.hasOwnProperty('fieldSettingsForm')) {
       this.fieldSettingsForm = data.fieldSettingsForm;
     }
+    this.fieldId = data.fieldId;
     this.fieldIsVisible = this.fieldSettingsForm.controls.fieldVisible.value;
     this.fieldSettingsForm.controls.position.setValue(data.componentPosition + 1);
     this.fieldSettingsForm.controls.title.setValue(data.title);
@@ -53,6 +59,22 @@ export class FieldSettingsFormComponent implements OnInit {
 
   public setFormFieldTriggerForFieldVisibility(field: any): void {
     this.selectedFormFieldForFieldVisibility = field;
+  }
+
+  public setFormFieldChoicesTrigger(value: boolean, index: number): void {
+    const optionIndex = index.toString();
+    const fieldTrigger = {
+      fieldId: this.currentlySelectedField.instance.fieldId,
+      index: optionIndex,
+      targetFieldId: this.fieldId,
+    };
+    if (value) {
+      this.choicesOption.push(fieldTrigger);
+    } else {
+      if (this.choicesOption.some(field => field.index === optionIndex)) {
+        this.choicesOption = this.choicesOption.filter(option => option.index !== optionIndex);
+      }
+    }
   }
 
   public showFieldVisibilitySettings(value: boolean): void {

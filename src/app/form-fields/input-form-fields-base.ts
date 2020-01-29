@@ -6,8 +6,10 @@ import { FormGroup } from '@angular/forms';
 })
 export class InputFormFieldsBaseComponent implements OnInit {
   @Output() componentAction: EventEmitter<any> = new EventEmitter();
+  @Output() setFieldChoicesOption: EventEmitter<any> = new EventEmitter();
   @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
   protected availableFormFieldsWithChoices: Array<any> = [];
+  protected choicesOption: any;
   protected componentPosition: number;
   protected componentRef: any;
   protected currentlySelectedField: any;
@@ -31,9 +33,17 @@ export class InputFormFieldsBaseComponent implements OnInit {
   protected getMakingChangesState(makingChanges: boolean): void { this.makingChanges = makingChanges; }
 
   protected setUpdatedFieldSettingsData(data: any): void {
-    this.title = data.title.value;
-    this.isRequired = data.isRequired.value;
-    this.changeComponentPosition(data.position.value);
+    if (Object.keys(data.choicesOption).length > 0) {
+      const choicesOptionData = {
+        choicesOption: data.choicesOption,
+        component: this.componentRef
+      };
+      this.setFieldChoicesOption.emit(choicesOptionData);
+    }
+    this.title = data.formValues.title.value;
+    this.isRequired = data.formValues.isRequired.value;
+    this.makingChanges = false;
+    this.changeComponentPosition(data.formValues.position.value);
   }
 
   protected triggerComponentAction(action: string, direction?: string): void {
@@ -69,6 +79,7 @@ export class InputFormFieldsBaseComponent implements OnInit {
     this.fieldSettingsData = {
       componentPosition: this.componentPosition,
       componentRef: this.componentRef,
+      fieldId: this.fieldId,
       title: this.title
     };
   }
