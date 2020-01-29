@@ -1,5 +1,5 @@
 <div id="main-container">
-   <div id="form-builder-container">
+    <div id="form-builder-container">
         <h2>Toolbox</h2>
         <hr>
         <div *ngFor="let choice of formBuilderChoices" (click)="addField(choice.component)" id="form-field-options">
@@ -18,9 +18,12 @@
                 <div id="form-name">
                     <mat-icon [matMenuTriggerFor]="menu">description</mat-icon>
                     <mat-menu #menu="matMenu">
-                        <div (click)="createNewForm()">
-                            <mat-icon>create_new_folder</mat-icon>New
-                        </div>
+                        <button (click)="createNewForm()" mat-menu-item>
+                            <mat-icon color="primary">create_new_folder</mat-icon>New
+                        </button>
+                        <button (click)="clearForm()" mat-menu-item>
+                            <mat-icon color="primary">clear</mat-icon>Clear
+                        </button>
                     </mat-menu>
                     <input [formControl]="formTitleControl" matInput type="text" [value]="formTitleControl.value">
                 </div>

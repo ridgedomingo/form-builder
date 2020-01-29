@@ -95,7 +95,6 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             };
             this.setFieldChoicesOption.emit(choicesOptionData);
         }
-        // this.choicesOption = data.choicesOption;
         const options = data.formValues.options as FormArray;
         this.createCopyOfCurrentFieldOptions(options.controls);
         this.title = data.FormValues.title.value;

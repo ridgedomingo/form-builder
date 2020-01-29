@@ -84,8 +84,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.generateForm();
   }
 
-  public createNewForm(): void {
+  public clearForm(): void {
     this.formQuestionnaireRef.clear();
+    this.questionCounter = 0;
+  }
+
+  public createNewForm(): void {
+    this.clearForm();
     this.formTitleCounter = this.formTitleCounter + 1;
     this.formName = `Untitled Form ${this.formTitleCounter}`;
     this.formTitleControl.setValue(this.formName);
