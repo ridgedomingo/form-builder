@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { FormFieldsModule } from './form-fields/form-fields.module';
+import { QuestionnaireFormFieldsModule } from './questionnaire-form-fields/questionnaire-form-fields.module';
 import { MatButtonModule, MatIconModule, MatInputModule, MatMenuModule, MatProgressSpinnerModule } from '@angular/material';
 
 import { FormBuilderComponent } from './form-builder/form-builder.component';
@@ -20,13 +20,13 @@ import { FormBuilderComponent } from './form-builder/form-builder.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormFieldsModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    QuestionnaireFormFieldsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

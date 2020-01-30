@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-field-settings-form',
-  templateUrl: './field-settings-form.component.html',
-  styleUrls: ['./field-settings-form.component.scss']
+  templateUrl: './questionnaire-field-settings-form.component.html',
+  styleUrls: ['./questionnaire-field-settings-form.component.scss']
 })
-export class FieldSettingsFormComponent implements OnInit {
+export class QuestionnaireFieldSettingsFormComponent implements OnInit {
   @Input() set pageData(data: any) {
     this.setFieldValues(data);
   }

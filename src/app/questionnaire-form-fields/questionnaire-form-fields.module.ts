@@ -7,11 +7,11 @@ import {
     MatIconModule, MatInputModule, MatSelectModule, MatRadioModule
 } from '@angular/material';
 
-import { FormFieldsActionModule } from '../form-field-actions/form-field-actions.module';
+import { QuestionnaireFormFieldsActionModule } from '../questionnaire-form-field-actions/questionnaire-form-field-actions.module';
 
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
-import { FieldSettingsFormComponent } from '../field-settings-form/field-settings-form.component';
+import { QuestionnaireFieldSettingsFormComponent } from '../questionnaire-field-settings-form/questionnaire-field-settings-form.component';
 import { InputFieldComponent } from './input-field/input-field.component';
 import { NumberInputFieldComponent } from './number-input-field/number-input-field.component';
 import { RadioButtonComponent } from './radio-button/radio-button.component';
@@ -21,7 +21,7 @@ import { TextAreaComponent } from './text-area/text-area.component';
     declarations: [
         CheckboxComponent,
         DropdownComponent,
-        FieldSettingsFormComponent,
+        QuestionnaireFieldSettingsFormComponent,
         InputFieldComponent,
         NumberInputFieldComponent,
         RadioButtonComponent,
@@ -37,7 +37,6 @@ import { TextAreaComponent } from './text-area/text-area.component';
     ],
     imports: [
         BrowserModule,
-        FormFieldsActionModule,
         MatButtonModule,
         MatCheckboxModule,
         MatGridListModule,
@@ -45,7 +44,8 @@ import { TextAreaComponent } from './text-area/text-area.component';
         MatInputModule,
         MatRadioModule,
         MatSelectModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        QuestionnaireFormFieldsActionModule
     ],
     exports: [
         CheckboxComponent,
@@ -55,5 +55,5 @@ import { TextAreaComponent } from './text-area/text-area.component';
     ],
     providers: []
 })
-export class FormFieldsModule { }
+export class QuestionnaireFormFieldsModule { }
 

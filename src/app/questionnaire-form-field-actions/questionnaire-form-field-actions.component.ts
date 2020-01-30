@@ -2,10 +2,10 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-form-field-actions',
-  templateUrl: './form-field-actions.component.html',
-  styleUrls: ['./form-field-actions.component.scss']
+  templateUrl: './questionnaire-form-field-actions.component.html',
+  styleUrls: ['./questionnaire-form-field-actions.component.scss']
 })
-export class FormFieldActionsComponent implements OnInit {
+export class QuestionnaireFormFieldActionsComponent implements OnInit {
   @Output() componentAction: EventEmitter<any> = new EventEmitter();
 
   constructor() { }

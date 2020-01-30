@@ -97,13 +97,13 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         }
         const options = data.formValues.options as FormArray;
         this.createCopyOfCurrentFieldOptions(options.controls);
-        this.title = data.FormValues.title.value;
-        this.isRequired = data.FormValues.isRequired.value;
+        this.title = data.formValues.title.value;
+        this.isRequired = data.formValues.isRequired.value;
         this.makingChanges = false;
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
-        this.changeComponentPosition(data.FormValues.position.value);
+        this.changeComponentPosition(data.formValues.position.value);
     }
 
     protected initializeForm(): void {

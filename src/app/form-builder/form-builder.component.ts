@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import {
   CheckboxComponent, DropdownComponent, InputFieldComponent,
   NumberInputFieldComponent, RadioButtonComponent, TextAreaComponent
-} from '../form-fields/index';
+} from '../questionnaire-form-fields';
 
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
