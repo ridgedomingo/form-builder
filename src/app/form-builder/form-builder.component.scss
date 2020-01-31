@@ -2,6 +2,14 @@
     display: flex;
     min-height: 100vh;
 
+    .inactive-toolbox {
+        height: 100%;
+        background: rgba(7, 7, 7, 0.5);
+        position: absolute;
+        width: calc(20% + 32px);
+        z-index: 2;
+    }
+
     #form-container {
         background: #e6e6e6;
         min-height: 100vh;
@@ -79,6 +87,30 @@
                 font-size: 22px;
                 margin-right: 5px;
             }
+        }
+    }
+
+    #form-preview-container {
+        align-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 20%;
+        justify-content: center;
+        width: 80%;
+
+        #form-name-and-edit-btn-container {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+
+            mat-icon {
+                margin-left: 5px;
+            }
+        }
+
+        #form-preview {
+            width: 50%
         }
     }
 }

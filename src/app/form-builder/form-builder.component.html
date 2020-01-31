@@ -1,4 +1,5 @@
 <div id="main-container">
+    <div (click)="showQuestionnaireView()" [ngClass]="{'inactive-toolbox': !questionnaireView}"></div>
     <div id="form-builder-container">
         <h2>Toolbox</h2>
         <hr>
@@ -14,35 +15,50 @@
         </div>
 
         <ng-template #formQuestionnaire>
-            <div class="form-options-container form-container-items">
-                <div id="form-name">
-                    <mat-icon [matMenuTriggerFor]="menu">description</mat-icon>
-                    <mat-menu #menu="matMenu">
-                        <button (click)="createNewForm()" mat-menu-item>
-                            <mat-icon color="primary">create_new_folder</mat-icon>New
-                        </button>
-                        <button (click)="clearForm()" mat-menu-item>
-                            <mat-icon color="primary">clear</mat-icon>Clear
-                        </button>
-                    </mat-menu>
-                    <input [formControl]="formTitleControl" matInput type="text" [value]="formTitleControl.value">
+            <ng-container *ngIf="questionnaireView">
+                <div class="form-options-container form-container-items">
+                    <div id="form-name">
+                        <mat-icon [matMenuTriggerFor]="menu">arrow_drop_down</mat-icon>
+                        <mat-icon [matMenuTriggerFor]="menu">description</mat-icon>
+                        <mat-menu #menu="matMenu">
+                            <button (click)="createNewForm()" mat-menu-item>
+                                <mat-icon color="primary">create_new_folder</mat-icon>New
+                            </button>
+                            <button (click)="clearForm()" mat-menu-item>
+                                <mat-icon color="primary">clear</mat-icon>Clear
+                            </button>
+                            <button (click)="showFormPreview()" mat-menu-item>
+                                <mat-icon color="primary">play_arrow</mat-icon>Preview
+                            </button>
+                        </mat-menu>
+                        <input [formControl]="formTitleControl" matInput type="text" [value]="formTitleControl.value">
+                    </div>
+                    <div id="form-actions">
+                        <ng-container *ngIf="changesWereMade; else saveFinished">
+                            <div class="loader-container">
+                                <mat-spinner [diameter]="25"></mat-spinner>
+                                <span>Saving changes...</span>
+                            </div>
+                        </ng-container>
+                        <ng-template #saveFinished>
+                            <div id="form-builder-header-container">
+                                <mat-icon class="check-icon">check</mat-icon>
+                                <span>Changes were save in your browser's storage</span>
+                                <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
+                            </div>
+                        </ng-template>
+                    </div>
                 </div>
-                <div id="form-actions">
-                    <ng-container *ngIf="changesWereMade; else saveFinished">
-                        <div class="loader-container">
-                            <mat-spinner [diameter]="25"></mat-spinner>
-                            <span>Saving changes...</span>
-                        </div>
-                    </ng-container>
-                    <ng-template #saveFinished>
-                        <div id="form-builder-header-container">
-                            <mat-icon class="check-icon">check</mat-icon>
-                            <span>Changes were save in your browser's storage</span>
-                            <button (click)="generateForm()" color="primary" mat-raised-button>Generate Form</button>
-                        </div>
-                    </ng-template>
-                </div>
-            </div>
+            </ng-container>
         </ng-template>
+        <div *ngIf="!questionnaireView" id="form-preview-container">
+            <div id="form-name-and-edit-btn-container">
+                <h2>{{ formName }}</h2>
+                <mat-icon (click)="showQuestionnaireView()" color="primary" matTooltip="Edit this form" matTooltipPosition="right">edit</mat-icon>
+            </div>
+            <div id="form-preview">
+                <ng-template #formPreview></ng-template>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,4 +1,7 @@
-import { Component, ComponentFactoryResolver, OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component, ComponentFactoryResolver, ChangeDetectorRef,
+  OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation
+} from '@angular/core';
 
 import { FormControl } from '@angular/forms';
 
@@ -6,6 +9,11 @@ import {
   CheckboxComponent, DropdownComponent, InputFieldComponent,
   NumberInputFieldComponent, RadioButtonComponent, TextAreaComponent
 } from '../questionnaire-form-fields';
+
+import {
+  CheckboxFieldPreviewComponent, DropdownFieldPreviewComponent, InputFieldPreviewComponent,
+  NumberInputFieldPreviewComponent, RadioButtonFieldPreviewComponent, TextareaFieldPreviewComponent
+} from '../form-preview-fields/index';
 
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
@@ -42,12 +50,21 @@ interface IGeneratedForm {
 
 export class FormBuilderComponent implements OnInit, OnDestroy {
   @ViewChild('formQuestionnaire', { static: true, read: ViewContainerRef }) formQuestionnaireRef;
+  @ViewChild('formPreview', { static: false, read: ViewContainerRef }) set formPreviewContent(content: any) {
+    if (content) {
+      this.formPreviewFieldsRef = content;
+      this.createFieldsInFormPreview();
+    }
+  }
   public changesWereMade: boolean;
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
   public formName: string;
+  public formPreviewComponentRef: any;
+  public formPreviewFieldsRef: any;
   public formTitleControl: FormControl;
+  public questionnaireView: boolean;
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
   private formTitleCounter: number;
@@ -55,6 +72,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   private questionCounter: number;
 
   constructor(
+    private changeDetectorRef: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver,
   ) {
     this.setPageDefaultValues();
@@ -65,7 +83,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   public get noSelectionMade(): boolean {
-    return this.formQuestionnaireRef.length === 0;
+    return this.formQuestionnaireRef.length === 0 && this.questionnaireView;
   }
 
   public addField(fieldComponent: any): void {
@@ -103,6 +121,22 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.saveFormToLocalStorage(generatedForm);
   }
 
+  public showFormPreview(): void {
+    this.questionnaireView = false;
+    this.changeDetectorRef.detectChanges();
+    this.formItems.map((item, index) => {
+      this.formQuestionnaireRef.remove(index);
+    });
+  }
+
+  public showQuestionnaireView(): void {
+    this.questionnaireView = true;
+    this.changeDetectorRef.detectChanges();
+    this.formItems.map((item, index) => {
+      this.formQuestionnaireRef.insert(item);
+    });
+  }
+
   private get formFields(): Array<IFormFields> {
     const formFields: Array<IFormFields> = [];
     this.formItems.forEach(field => {
@@ -128,6 +162,16 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.generateForm();
   }
 
+  private createFieldsInFormPreview(): void {
+    const form = JSON.parse(localStorage.getItem(this.formName));
+    form.fields.forEach(field => {
+      const component = this.getFormFieldType(field.type);
+      const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+      this.formPreviewComponentRef = this.formPreviewFieldsRef.createComponent(formFieldComponentFactory);
+      this.formPreviewComponentRef.instance.fieldData = field;
+    });
+  }
+
   private fieldTypeHasChoices(fieldType: string): boolean {
     const fieldsWithChoices = ['RadioButtonComponent', 'DropdownComponent', 'CheckboxComponent'];
     return fieldsWithChoices.includes(fieldType);
@@ -135,6 +179,31 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private generateFormFieldId(): string {
     return [...Array(7)].map(() => Math.random().toString(36)[2]).join('');
+  }
+
+  private getFormFieldType(componentType: string): any {
+    let component: any;
+    switch (componentType) {
+      case 'Checkbox':
+        component = CheckboxFieldPreviewComponent;
+        break;
+      case 'Dropdown':
+        component = DropdownFieldPreviewComponent;
+        break;
+      case 'InputField':
+        component = InputFieldPreviewComponent;
+        break;
+      case 'NumberInputField':
+        component = NumberInputFieldPreviewComponent;
+        break;
+      case 'RadioButton':
+        component = RadioButtonFieldPreviewComponent;
+        break;
+      case 'TextArea':
+        component = TextareaFieldPreviewComponent;
+        break;
+    }
+    return component;
   }
 
   private getFormFieldsWithChoices(component: any): void {
@@ -145,6 +214,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private setPageDefaultValues(): void {
+    this.questionnaireView = true;
     this.questionCounter = 0;
     this.formTitleCounter = 1;
     this.formBuilderChoices = [

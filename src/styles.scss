@@ -101,7 +101,7 @@ mat-label {
 
 .field-settings-container {
     background: #f5f5f5;
-    box-shadow: rgba(194, 24, 91, 0.5) 0px 1px 10px; 
+    box-shadow: rgba(194, 24, 91, 0.5) 0px 1px 10px;
     border-radius: 5px;
     display: flex;
     flex-wrap: wrap;
@@ -186,7 +186,7 @@ mat-icon.show-on-hover {
     .mat-menu-item {
         color: #000000 !important;
     }
-    
+
 }
 
 .mat-menu-content {
@@ -196,4 +196,12 @@ mat-icon.show-on-hover {
     mat-icon {
         margin-right: 5px;
     }
+}
+
+.field-preview-container {
+    background: #f4f4f4;
+    border-bottom: 0.5px solid rgba(132, 132, 132, 0.5);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 16px;
 }

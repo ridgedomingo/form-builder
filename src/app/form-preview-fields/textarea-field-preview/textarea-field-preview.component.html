@@ -1,0 +1,7 @@
+<div class="field-preview-container">
+    <span>{{ field.index + 1 }} . </span>
+    <mat-form-field color="primary">
+        <mat-label [ngClass]="{'required': isRequired}">{{ field.title }}</mat-label>
+        <textarea matInput rows="1" type="text"></textarea>
+    </mat-form-field>
+</div>
