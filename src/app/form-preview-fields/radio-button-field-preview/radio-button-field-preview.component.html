@@ -1,6 +1,6 @@
 <div class="field-preview-container">
     <span> {{ field.index + 1 }} . </span>
-    <mat-label [ngClass]="{'required': isRequired}">{{ field.title }}</mat-label>
+    <mat-label [ngClass]="{'required': field.isRequired}">{{ field.title }}</mat-label>
     <div>
         <mat-radio-group class="radio-group">
             <mat-radio-button *ngFor="let option of field.choices" [value]="option">

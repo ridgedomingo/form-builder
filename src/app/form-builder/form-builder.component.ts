@@ -1,6 +1,6 @@
 import {
   Component, ComponentFactoryResolver, ChangeDetectorRef,
-  OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation
+  OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation, ViewRef
 } from '@angular/core';
 
 import { FormControl } from '@angular/forms';
@@ -125,15 +125,14 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.questionnaireView = false;
     this.changeDetectorRef.detectChanges();
     this.formItems.map((item, index) => {
-      this.formQuestionnaireRef.remove(index);
+      this.formQuestionnaireRef.detach(index);
     });
   }
 
   public showQuestionnaireView(): void {
     this.questionnaireView = true;
-    this.changeDetectorRef.detectChanges();
     this.formItems.map((item, index) => {
-      this.formQuestionnaireRef.insert(item);
+      this.formQuestionnaireRef.insert(item.hostView, index);
     });
   }
 
