@@ -303,14 +303,16 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public subscribeToFormFieldEvents(data: any): void {
     switch (data.action) {
       case 'move':
-        const newComponentPosition = data.direction === 'up' ? data.currentIndex - 1 : data.currentIndex + 1;
-        moveItemInArray(this.formItems, data.currentIndex, newComponentPosition);
+        moveItemInArray(this.formItems, data.currentIndex, data.newIndex);
         break;
       case 'delete':
         this.formItems.splice(data.currentIndex, 1);
         break;
       case 'update':
         this.formItems[data.currentIndex] = data.fieldData;
+        if (data.fieldData.currentIndex !== data.fieldData.index) {
+          moveItemInArray(this.formItems, data.fieldData.currentIndex, data.fieldData.index);
+        }
         break;
     }
     this.generateForm();

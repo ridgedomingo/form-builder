@@ -65,11 +65,12 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         if (action === 'show') {
             this.showFieldSettings();
         } else {
+            const newIndex = direction === 'up' ? this.componentPosition - 1 : this.componentPosition + 1;
             const data = {
                 action,
                 currentIndex: this.componentPosition,
-                fieldData: this.updatedData,
-                direction,
+                ...(action === 'update' ? { fieldData: this.updatedData } : {}),
+                ...(action !== 'update' ? { newIndex } : {})
             };
             this.componentAction.emit(data);
         }
@@ -91,9 +92,10 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             alwaysShowField: formValues.alwaysShowField.value,
             choices: data.formValues.options.value,
             currentFieldOptionsValue: this.currentFieldOptionsValue,
+            currentIndex: this.componentPosition,
             id: this.fieldId,
             ...(data.hasOwnProperty('fieldVisibilityTrigger') ? { fieldVisibilityTrigger: data.fieldVisibilityTrigger } : {}),
-            index: formValues.position.value,
+            index: formValues.position.value - 1,
             isRequired: formValues.isRequired.value,
             title: formValues.title.value,
             type: this.fieldType,
@@ -123,19 +125,6 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         const options = this.fieldSettingsForm.controls.options as FormArray;
         this.createCopyOfCurrentFieldOptions(this.initialFieldOptions);
         this.optionsCounter = options.length;
-    }
-
-    private changeComponentPosition(newPosition: number): void {
-        const newComponentPosition = newPosition;
-        if (newComponentPosition !== this.componentPosition + 1) {
-            const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
-            const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
-            this.componentAction.emit({
-                action: 'move',
-                direction,
-                placement
-            });
-        }
     }
 
     private createCopyOfCurrentFieldOptions(fieldOptions: any): void {

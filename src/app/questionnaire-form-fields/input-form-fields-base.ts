@@ -46,10 +46,11 @@ export class InputFormFieldsBaseComponent implements OnInit {
     this.makingChanges = false;
     this.updatedData = {
       alwaysShowField: formValues.alwaysShowField.value,
+      currentIndex: this.componentPosition,
       id: this.fieldId,
       ...(data.hasOwnProperty('fieldVisibilityTrigger') ? { fieldVisibilityTrigger: data.fieldVisibilityTrigger } : {}),
       type: this.fieldType,
-      index: formValues.position.value,
+      index: formValues.position.value - 1,
       isRequired: formValues.isRequired.value,
       title: formValues.title.value,
     };
@@ -60,27 +61,14 @@ export class InputFormFieldsBaseComponent implements OnInit {
     if (action === 'show') {
       this.showFieldSettings();
     } else {
+      const newIndex = direction === 'up' ? this.componentPosition - 1 : this.componentPosition + 1;
       const data = {
         action,
         currentIndex: this.componentPosition,
-        direction,
-        fieldData: this.updatedData
+        ...(action === 'update' ? { fieldData: this.updatedData } : {}),
+        ...(action !== 'update' ? { newIndex } : {})
       };
       this.componentAction.emit(data);
-    }
-  }
-
-  private changeComponentPosition(newPosition: number): void {
-    const newComponentPosition = newPosition;
-    if (newComponentPosition !== this.componentPosition + 1) {
-      const direction = newComponentPosition > this.componentPosition ? 'down' : 'up';
-      const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
-      this.componentAction.emit({
-        action: 'move',
-        currentIndex: this.componentPosition,
-        direction,
-        placement
-      });
     }
   }
 
