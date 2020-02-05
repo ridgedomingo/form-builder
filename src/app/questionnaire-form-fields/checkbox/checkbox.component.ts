@@ -12,7 +12,7 @@ import { FormFieldsWithOptionsBaseComponent } from '../form-fields-with-options-
 export class CheckboxComponent extends FormFieldsWithOptionsBaseComponent implements OnInit {
   constructor(
     public formBuilder: FormBuilder,
-    public renderer: Renderer2
+    public renderer: Renderer2,
   ) {
     super(formBuilder, renderer);
     this.setDefaultFieldValues();

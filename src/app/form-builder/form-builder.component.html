@@ -49,6 +49,38 @@
                         </ng-template>
                     </div>
                 </div>
+                <div cdkDropList (cdkDropListDropped)="onDropDraggedField($event)">
+                    <div #formQuestionnaireFields *ngFor="let item of formItems; let indx = index" cdkDrag>
+                        <ng-container [ngSwitch]="item.type">
+                            <ng-container *ngSwitchCase="'CheckboxComponent'">
+                                <app-checkbox [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
+                                    (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)" (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-checkbox>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'RadioButtonComponent'">
+                                <app-radio-button [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
+                                    (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)" (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-radio-button>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'DropdownComponent'">
+                                <app-dropdown [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
+                                    (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)" (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-dropdown>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'NumberInputFieldComponent'">
+                                <app-number-input-field [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)"
+                                    [formFieldVisibilityTriggers]="formFieldVisibilityTriggers" (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)"
+                                    (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-number-input-field>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'InputFieldComponent'">
+                                <app-input-field [fieldData]="item" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers" [componentPosition]="indx"
+                                    (componentAction)="subscribeToFormFieldEvents($event)" (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)"
+                                    (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-input-field>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'TextAreaComponent'">
+                                <app-text-area [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
+                                    (setFieldChoicesOption)="subscribeToChoicesOptionEvents($event)" (showFieldVisibilityForm)="subscribeToFieldVisibilityActionEvents($event)"></app-text-area>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
             </ng-container>
         </ng-template>
         <div *ngIf="!questionnaireView" id="form-preview-container">

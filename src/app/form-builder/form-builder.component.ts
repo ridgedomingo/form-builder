@@ -1,6 +1,8 @@
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+
 import {
   Component, ComponentFactoryResolver, ChangeDetectorRef,
-  OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation, ViewRef
+  OnInit, OnDestroy, ViewContainerRef, ViewChild, ViewEncapsulation
 } from '@angular/core';
 
 import { FormControl } from '@angular/forms';
@@ -27,10 +29,12 @@ interface IChoicesOption {
   [key: string]: IChoicesOptionProperties;
 }
 interface IFormFields {
+  alwaysShowField: boolean;
   choices?: Array<string>;
   choicesOption?: IChoicesOption;
+  fieldVisibilityTrigger?: any;
   id: string;
-  index: number;
+  index?: number;
   isRequired: boolean;
   title: string;
   type: string;
@@ -60,6 +64,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
+  public formFieldVisibilityTriggers: any;
   public formName: string;
   public formPreviewComponentRef: any;
   public formPreviewFieldsRef: any;
@@ -68,7 +73,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private componentIsDestroyed$: Subject<boolean> = new Subject();
   private formTitleCounter: number;
-  private generatedForm: IGeneratedForm;
+  private initialFieldOptionsValue: Array<string> = ['Option 1', 'Option 2', 'Option 3'];
   private questionCounter: number;
 
   constructor(
@@ -83,22 +88,23 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   public get noSelectionMade(): boolean {
-    return this.formQuestionnaireRef.length === 0 && this.questionnaireView;
+    return this.formItems.length === 0 && this.questionnaireView;
   }
 
   public addField(fieldComponent: any): void {
+    let fieldData: IFormFields = {} as IFormFields;
     this.questionCounter = this.questionCounter + 1;
     const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(fieldComponent);
-    this.componentRef = this.formQuestionnaireRef.createComponent(formFieldComponentFactory);
-    this.componentRef.instance.componentRef = this.componentRef;
-    this.componentRef.instance.componentPosition = this.formQuestionnaireRef.indexOf(this.componentRef);
-    this.componentRef.instance.fieldType = formFieldComponentFactory.componentType.name;
-    this.componentRef.instance.title = `Question ${this.questionCounter}`;
-    this.componentRef.instance.fieldId = this.generateFormFieldId();
-    this.formItems.push(this.componentRef);
-    this.subscribeToChoicesOptionEvents();
-    this.subscribeToFormFieldEvents();
-    this.subscribeToFieldVisibilityActionEvents();
+    fieldData = {
+      alwaysShowField: true,
+      ...(this.fieldTypeHasChoices(formFieldComponentFactory.componentType.name) ?
+        { choices: this.initialFieldOptionsValue } : {}),
+      id: this.generateFormFieldId(),
+      isRequired: false,
+      title: `Question ${this.questionCounter}`,
+      type: formFieldComponentFactory.componentType.name,
+    };
+    this.formItems.push(fieldData);
     this.generateForm();
   }
 
@@ -114,9 +120,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formTitleControl.setValue(this.formName);
   }
 
+  public onDropDraggedField(event: any): void {
+    moveItemInArray(this.formItems, event.previousIndex, event.currentIndex);
+  }
+
   public generateForm(): void {
     const generatedForm: IGeneratedForm = {} as IGeneratedForm;
-    generatedForm.fields = this.formFields;
+    generatedForm.fields = this.formItems;
     generatedForm.name = this.formName;
     this.saveFormToLocalStorage(generatedForm);
   }
@@ -134,24 +144,6 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formItems.map((item, index) => {
       this.formQuestionnaireRef.insert(item.hostView, index);
     });
-  }
-
-  private get formFields(): Array<IFormFields> {
-    const formFields: Array<IFormFields> = [];
-    this.formItems.forEach(field => {
-      const instance = field.instance;
-      const fieldType = instance.fieldType.split('Component');
-      formFields.push({
-        ...(this.fieldTypeHasChoices(instance.fieldType) ? { choices: instance.currentFieldOptionsValue } : {}),
-        choicesOption: instance.choicesOption,
-        id: instance.fieldId,
-        index: instance.componentPosition,
-        isRequired: instance.isRequired ? true : false,
-        title: instance.title,
-        type: fieldType[0],
-      });
-    });
-    return formFields;
   }
 
   private assignFieldNewIndex(): void {
@@ -206,9 +198,9 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private getFormFieldsWithChoices(component: any): void {
-    component.instance.availableFormFieldsWithChoices = this.formItems.filter(field => {
-      return this.fieldTypeHasChoices(field.instance.fieldType) && field.fieldId !== component.instance.fieldId
-        && field.instance.componentPosition < component.instance.componentPosition;
+    this.formFieldVisibilityTriggers = this.formItems.filter((field, index) => {
+      return this.fieldTypeHasChoices(field.type) && field.id !== component.fieldId
+        && index < component.componentPosition;
     });
   }
 
@@ -259,7 +251,6 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   private saveFormToLocalStorage(form: IGeneratedForm): void {
     this.changesWereMade = true;
-    this.generatedForm = form;
     localStorage.setItem(form.name, JSON.stringify(form));
     if (this.changesWereMade) {
       setTimeout(() => {
@@ -269,96 +260,71 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private setFieldChoicesOption(data: any): void {
-    if (Object.keys(this.generatedForm).length > 0) {
-      let targetIds: Array<string> = [];
-      const choicesOption: IChoicesOption = {} as IChoicesOption;
-      const choicesOptionProperties: IChoicesOptionProperties = {} as IChoicesOptionProperties;
-      this.generatedForm.fields.forEach(field => {
-        if (field.id === data.choicesOption[0].fieldId) {
-          const componentIndex = this.formItems.findIndex(item => item.instance.fieldId === field.id);
-          if (field.hasOwnProperty('choicesOption')) {
-            choicesOptionProperties.action = 'show';
-            data.choicesOption.forEach(option => {
-              if (field.choicesOption[option.index] !== undefined) {
-                targetIds = field.choicesOption[option.index].targetIds;
-              }
-              if (!targetIds.includes(option.targetFieldId)) {
-                targetIds.push(option.targetFieldId);
-              }
-              choicesOptionProperties.targetIds = targetIds;
-              choicesOption[option.index] = choicesOptionProperties;
-              field.choicesOption = choicesOption;
-              data.component.instance.choicesOption = choicesOption;
-              this.formItems[componentIndex].instance.choicesOption = choicesOption;
-            });
-          } else {
-            data.choicesOption.forEach(option => {
-              if (!targetIds.includes(option.targetFieldId)) {
-                targetIds.push(option.targetFieldId);
-              }
-              choicesOptionProperties.targetIds = targetIds;
-              choicesOption[option.index] = choicesOptionProperties;
-              field.choicesOption = choicesOption;
-              data.component.instance.choicesOption = choicesOption;
-              this.formItems[componentIndex].instance.choicesOption = choicesOption;
-            });
-          }
+    let targetIds: Array<string> = [];
+    const choicesOption: IChoicesOption = {} as IChoicesOption;
+    const choicesOptionProperties: IChoicesOptionProperties = {} as IChoicesOptionProperties;
+
+    this.formItems.forEach((field, index) => {
+      const componentIndex = this.formItems.findIndex(item => item.id === field.id);
+      if (field.id === data[0].fieldId) {
+        if (field.hasOwnProperty('choicesOption')) {
+          choicesOptionProperties.action = 'show';
+          data.forEach(option => {
+            if (field.choicesOption[option.index] !== undefined) {
+              targetIds = field.choicesOption[option.index].targetIds;
+            }
+            if (!targetIds.includes(option.targetFieldId)) {
+              targetIds.push(option.targetFieldId);
+            }
+            choicesOptionProperties.targetIds = targetIds;
+            choicesOption[option.index] = choicesOptionProperties;
+            field.choicesOption = choicesOption;
+            data.choicesOption = choicesOption;
+            this.formItems[componentIndex].choicesOption = choicesOption;
+          });
+        } else {
+          data.forEach(option => {
+            if (!targetIds.includes(option.targetFieldId)) {
+              targetIds.push(option.targetFieldId);
+            }
+            choicesOptionProperties.targetIds = targetIds;
+            choicesOption[option.index] = choicesOptionProperties;
+            field.choicesOption = choicesOption;
+            data.choicesOption = choicesOption;
+            this.formItems[componentIndex].choicesOption = choicesOption;
+          });
         }
-      });
-      this.saveFormToLocalStorage(this.generatedForm);
+      }
+    });
+    this.generateForm();
+  }
+
+
+  public subscribeToFieldVisibilityActionEvents(data: any): void {
+    if (!data.fieldIsVisible) {
+      this.getFormFieldsWithChoices(data);
+    }
+  }
+  public subscribeToChoicesOptionEvents(data: any): void {
+    if (data && data.length > 0) {
+      this.setFieldChoicesOption(data);
     }
   }
 
-
-  private subscribeToFieldVisibilityActionEvents(): void {
-    this.componentRef.instance.showFieldVisibilityForm
-      .pipe(distinctUntilChanged(),
-        takeUntil(this.componentIsDestroyed$))
-      .subscribe(data => {
-        if (!data.fieldIsVisible) {
-          this.componentRef = data.component;
-          this.getFormFieldsWithChoices(data.component);
-        }
-      });
-  }
-  private subscribeToChoicesOptionEvents(): void {
-    this.componentRef.instance.setFieldChoicesOption
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.componentIsDestroyed$)
-      )
-      .subscribe(data => {
-        if (data.choicesOption && data.choicesOption.length > 0) {
-          this.setFieldChoicesOption(data);
-        }
-      });
-  }
-
-  private subscribeToFormFieldEvents(): void {
-    this.componentRef.instance.componentAction
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.componentIsDestroyed$)
-      )
-      .subscribe(data => {
-        const componentInstance = data.component;
-        const componentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
-        switch (data.action) {
-          case 'move':
-            const componentPosition = data.direction === 'up' ?
-              componentInstanceIndex - data.placement : componentInstanceIndex + data.placement;
-            this.formQuestionnaireRef.move(componentInstance.hostView, componentPosition);
-            const newComponentInstanceIndex = this.formQuestionnaireRef.indexOf(componentInstance.hostView);
-            this.moveFormItemsPosition(componentInstanceIndex, newComponentInstanceIndex);
-            this.assignFieldNewIndex();
-            break;
-          case 'delete':
-            this.formQuestionnaireRef.remove(componentInstanceIndex);
-            this.formItems.splice(componentInstanceIndex, 1);
-            this.assignFieldNewIndex();
-            break;
-        }
-      });
+  public subscribeToFormFieldEvents(data: any): void {
+    switch (data.action) {
+      case 'move':
+        const newComponentPosition = data.direction === 'up' ? data.currentIndex - 1 : data.currentIndex + 1;
+        moveItemInArray(this.formItems, data.currentIndex, newComponentPosition);
+        break;
+      case 'delete':
+        this.formItems.splice(data.currentIndex, 1);
+        break;
+      case 'update':
+        this.formItems[data.currentIndex] = data.fieldData;
+        break;
+    }
+    this.generateForm();
   }
 
   private subscribeToFormNameValueChanges(): void {

@@ -10,20 +10,19 @@ export class QuestionnaireFieldSettingsFormComponent implements OnInit {
   @Input() set pageData(data: any) {
     this.setFieldValues(data);
   }
-  @Input() formFieldVisibilityTriggers: any;
+  @Input() formFieldVisibilityTriggers: Array<any>;
   @Output() fieldSettingsUpdatedData: EventEmitter<any> = new EventEmitter();
   @Output() makingChanges: EventEmitter<boolean> = new EventEmitter();
   @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
+  public alwaysShowField: boolean;
   public choicesOption: Array<any> = [];
+  public choicesOptionValue: Array<string> = [];
   public componentPosition: number;
-  public componentRef: any;
   public currentlySelectedField: any;
   public selectedFormFieldForFieldVisibility: any;
   public fieldId: string;
   public fieldSettingsForm: FormGroup;
   public fieldType: string;
-  public fieldIsVisible: boolean;
-  public isRequired: boolean;
   public title: string;
 
 
@@ -39,8 +38,14 @@ export class QuestionnaireFieldSettingsFormComponent implements OnInit {
   public hideFieldSettings(): void { this.makingChanges.emit(false); }
 
   public saveFieldSettings(): void {
+    const fieldVisibilityTrigger = Object.assign({}, this.currentlySelectedField);
+    if (this.currentlySelectedField) {
+      const choicesOptionValueKey = 'choicesOptionValue';
+      fieldVisibilityTrigger[choicesOptionValueKey] = this.choicesOptionValue;
+    }
     const fieldSettingsData = {
       choicesOption: this.choicesOption,
+      fieldVisibilityTrigger,
       formValues: this.fieldSettingsForm.controls
     };
     this.fieldSettingsUpdatedData.emit(fieldSettingsData);
@@ -50,46 +55,55 @@ export class QuestionnaireFieldSettingsFormComponent implements OnInit {
     if (data.hasOwnProperty('fieldSettingsForm')) {
       this.fieldSettingsForm = data.fieldSettingsForm;
     }
+    if (data.hasOwnProperty('fieldVisibilityTrigger')) {
+      this.currentlySelectedField = data.fieldVisibilityTrigger;
+      this.selectedFormFieldForFieldVisibility = data.fieldVisibilityTrigger;
+    }
+    this.componentPosition = data.componentPosition;
     this.fieldId = data.fieldId;
-    this.fieldIsVisible = this.fieldSettingsForm.controls.fieldVisible.value;
+    this.fieldSettingsForm.controls.alwaysShowField.setValue(data.alwaysShowField);
     this.fieldSettingsForm.controls.position.setValue(data.componentPosition + 1);
     this.fieldSettingsForm.controls.title.setValue(data.title);
-    this.componentRef = data.componentRef;
+    this.fieldSettingsForm.controls.isRequired.setValue(data.isRequired);
+    this.alwaysShowField = this.fieldSettingsForm.controls.alwaysShowField.value;
   }
 
   public setFormFieldTriggerForFieldVisibility(field: any): void {
     this.selectedFormFieldForFieldVisibility = field;
   }
 
-  public setFormFieldChoicesTrigger(value: boolean, index: number): void {
+  public setFormFieldChoicesTrigger(event: any, index: number): void {
     const optionIndex = index.toString();
     const fieldTrigger = {
-      fieldId: this.currentlySelectedField.instance.fieldId,
+      fieldId: this.selectedFormFieldForFieldVisibility.id,
       index: optionIndex,
       targetFieldId: this.fieldId,
     };
-    if (value) {
+    if (event.checked) {
       this.choicesOption.push(fieldTrigger);
+      this.choicesOptionValue.push(event.source.value);
     } else {
       if (this.choicesOption.some(field => field.index === optionIndex)) {
         this.choicesOption = this.choicesOption.filter(option => option.index !== optionIndex);
+        this.choicesOptionValue = this.choicesOptionValue.filter(option => option !== event.source.value);
       }
     }
   }
 
   public showFieldVisibilitySettings(value: boolean): void {
     this.currentlySelectedField = this.currentlySelectedField ? this.currentlySelectedField : 'Select';
-    this.fieldIsVisible = value;
+    this.alwaysShowField = value;
     const data = {
+      componentPosition: this.componentPosition,
       fieldIsVisible: value,
-      component: this.componentRef
+      fieldId: this.fieldId
     };
     this.showFieldVisibilityForm.emit(data);
   }
 
   private initializeForm(): void {
     this.fieldSettingsForm = this.formBuilder.group({
-      fieldVisible: [true],
+      alwaysShowField: [true],
       isRequired: [false],
       position: ['', Validators.required],
       title: ['', Validators.required],

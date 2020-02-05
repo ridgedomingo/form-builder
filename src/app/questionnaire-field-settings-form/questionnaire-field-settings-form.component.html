@@ -14,27 +14,28 @@
         </div>
         <div>
             <mat-label style="margin-right: 5px;">Required</mat-label>
-            <mat-checkbox [checked]="isRequired" color="primary" formControlName="isRequired"></mat-checkbox>
+            <mat-checkbox color="primary" formControlName="isRequired"></mat-checkbox>
         </div>
         <ng-content></ng-content>
         <div>
             <mat-label style="margin-right: 5px;">Always show this field</mat-label>
-            <mat-checkbox (change)="showFieldVisibilitySettings($event.checked)" [checked]="fieldIsVisible" color="primary" formControlName="fieldVisible"></mat-checkbox>
-            <ng-container *ngIf="!fieldIsVisible">
+            <mat-checkbox (change)="showFieldVisibilitySettings($event.checked)" color="primary" formControlName="alwaysShowField"></mat-checkbox>
+            <ng-container *ngIf="!alwaysShowField">
                 <h4>Visible if</h4>
                 <div id="field-visibility-settings-form">
                     <mat-form-field class="form-field-select">
                         <mat-label>Select question</mat-label>
                         <mat-select (selectionChange)="setFormFieldTriggerForFieldVisibility($event.value)" class="custom-dropdown" [(value)]="currentlySelectedField">
                             <mat-option *ngFor="let field of formFieldVisibilityTriggers" [value]="field">
-                                {{ field.instance.title }}
+                                {{ field.title }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <div>
-                        <span *ngIf="currentlySelectedOption">is equal to the ff:</span>
-                        <div *ngFor="let option of selectedFormFieldForFieldVisibility?.instance?.currentFieldOptionsValue; let indx = index">
-                            <mat-checkbox (change)="setFormFieldChoicesTrigger($event.checked, indx)" color="primary">
+                    <div *ngIf="selectedFormFieldForFieldVisibility">
+                        <span>is equal to the ff:</span>
+                        <div *ngFor="let option of selectedFormFieldForFieldVisibility?.choices; let indx = index">
+                            <mat-checkbox (change)="setFormFieldChoicesTrigger($event, indx)" color="primary" 
+                                [checked]="selectedFormFieldForFieldVisibility?.choicesOptionValue?.includes(option)" [value]="option">
                                 {{ option }}
                             </mat-checkbox>
                         </div>

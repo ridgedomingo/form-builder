@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, Renderer2, OnInit, Output, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Renderer2, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
 import { fromEvent, Subject } from 'rxjs';
@@ -9,35 +9,34 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
     selector: 'app-form-fields-with-options-base',
 })
 export class FormFieldsWithOptionsBaseComponent implements OnInit {
+    @Input() set fieldData(data: any) {
+        if (data) { this.setFieldData(data); }
+    }
+    @Input() componentPosition: number;
+    @Input() formFieldVisibilityTriggers: any;
     @ViewChildren('fieldOptions') fieldOptions: QueryList<any>;
     @Output() componentAction: EventEmitter<any> = new EventEmitter();
     @Output() setFieldChoicesOption: EventEmitter<any> = new EventEmitter();
     @Output() showFieldVisibilityForm: EventEmitter<any> = new EventEmitter();
-    protected availableFormFieldsWithChoices: Array<any> = [];
+    protected alwaysShowField: boolean;
     protected choicesOption: Array<any> = [];
-    protected componentPosition: number;
-    protected componentRef: any;
     protected currentFieldOptions: any;
     protected currentFieldOptionsValue: Array<string> = [];
-    protected currentlySelectedField: any;
-    protected initialFieldOptions: any;
-    protected selectedFormFieldForFieldVisibility: any;
+    protected initialFieldOptions: Array<any>;
     protected fieldId: string;
     protected fieldSettingsForm: FormGroup;
     protected fieldSettingsData: any;
     protected fieldType: string;
-    protected fieldIsVisible: boolean;
+    protected fieldVisibilityTrigger: any;
+    protected finishedModifyingFieldSettings$: Subject<boolean>;
     protected isRequired: boolean;
     protected makingChanges: boolean;
-    protected title: string;
-
-
-    protected finishedModifyingFieldSettings$: Subject<boolean>;
     protected optionsCounter: number;
-
+    protected title: string;
+    protected updatedData: any;
     constructor(
         protected formBuilder: FormBuilder,
-        protected renderer: Renderer2
+        protected renderer: Renderer2,
     ) {
         this.initializeForm();
     }
@@ -51,12 +50,6 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         options.push(
             new FormControl(`Option ${this.optionsCounter}`)
         );
-        this.fieldSettingsData = {
-            componentPosition: this.componentPosition,
-            componentRef: this.componentRef,
-            fieldSettingsForm: this.fieldSettingsForm,
-            title: this.title
-        };
     }
 
     protected emitFieldVisibilityFormValues(values: any): void { this.showFieldVisibilityForm.emit(values); }
@@ -74,9 +67,9 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
         } else {
             const data = {
                 action,
-                component: this.componentRef,
+                currentIndex: this.componentPosition,
+                fieldData: this.updatedData,
                 direction,
-                placement: 1
             };
             this.componentAction.emit(data);
         }
@@ -88,22 +81,28 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
     }
 
     protected setUpdatedFieldSettingsData(data: any): void {
-        if (Object.keys(data.choicesOption).length > 0) {
-            const choicesOptionData = {
-                choicesOption: data.choicesOption,
-                component: this.componentRef
-            };
-            this.setFieldChoicesOption.emit(choicesOptionData);
+        if (data.choicesOption.length > 0) {
+            this.setFieldChoicesOption.emit(data.choicesOption);
         }
         const options = data.formValues.options as FormArray;
-        this.createCopyOfCurrentFieldOptions(options.controls);
-        this.title = data.formValues.title.value;
-        this.isRequired = data.formValues.isRequired.value;
+        const formValues = data.formValues;
         this.makingChanges = false;
+        this.updatedData = {
+            alwaysShowField: formValues.alwaysShowField.value,
+            choices: data.formValues.options.value,
+            currentFieldOptionsValue: this.currentFieldOptionsValue,
+            id: this.fieldId,
+            ...(data.hasOwnProperty('fieldVisibilityTrigger') ? { fieldVisibilityTrigger: data.fieldVisibilityTrigger } : {}),
+            index: formValues.position.value,
+            isRequired: formValues.isRequired.value,
+            title: formValues.title.value,
+            type: this.fieldType,
+        };
+        this.fieldSettingsForm.controls.options = options;
+        this.triggerComponentAction('update');
         this.finishedModifyingFieldSettings$.next(true);
         this.finishedModifyingFieldSettings$.complete();
         this.finishedModifyingFieldSettings$ = null;
-        this.changeComponentPosition(data.formValues.position.value);
     }
 
     protected initializeForm(): void {
@@ -113,6 +112,7 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             new FormControl('Option 3'),
         ];
         this.fieldSettingsForm = this.formBuilder.group({
+            alwaysShowField: [true],
             fieldVisible: [true],
             isRequired: [false],
             position: ['', Validators.required],
@@ -132,7 +132,6 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             const placement = direction === 'down' ? newComponentPosition - 1 : this.componentPosition + 1 - newComponentPosition;
             this.componentAction.emit({
                 action: 'move',
-                component: this.componentRef,
                 direction,
                 placement
             });
@@ -178,13 +177,37 @@ export class FormFieldsWithOptionsBaseComponent implements OnInit {
             });
     }
 
+    private setFieldData(data: any): void {
+        if (data.hasOwnProperty('choices')) {
+            const options = this.fieldSettingsForm.controls.options as FormArray;
+            options.clear();
+            Object.keys(data.choices).forEach(key => {
+                options.push(new FormControl(data.choices[key]));
+            });
+            this.createCopyOfCurrentFieldOptions(options.controls);
+            this.optionsCounter = options.length;
+        }
+        if (data.hasOwnProperty('choicesOption')) { this.choicesOption = data.choicesOption; }
+        if (data.hasOwnProperty('fieldVisibilityTrigger')) {
+            this.fieldVisibilityTrigger = data.fieldVisibilityTrigger;
+        }
+        this.alwaysShowField = data.alwaysShowField;
+        this.fieldType = data.type;
+        this.fieldId = data.id;
+        this.isRequired = data.isRequired;
+        this.title = data.title;
+    }
+
     private showFieldSettings(): void {
         this.finishedModifyingFieldSettings$ = new Subject();
         this.makingChanges = true;
         this.fieldSettingsData = {
+            alwaysShowField: this.alwaysShowField,
             componentPosition: this.componentPosition,
-            componentRef: this.componentRef,
+            fieldId: this.fieldId,
+            ...(this.fieldVisibilityTrigger ? { fieldVisibilityTrigger: this.fieldVisibilityTrigger } : {}),
             fieldSettingsForm: this.fieldSettingsForm,
+            isRequired: this.isRequired,
             title: this.title
         };
         this.setChoicesInputFieldWidth();

@@ -10,7 +10,6 @@ import { InputFormFieldsBaseComponent } from '../input-form-fields-base';
   encapsulation: ViewEncapsulation.None
 })
 export class InputFieldComponent extends InputFormFieldsBaseComponent implements OnInit {
-  public componentPosition: number;
   constructor(
   ) {
     super();

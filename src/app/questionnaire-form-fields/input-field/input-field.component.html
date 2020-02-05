@@ -13,7 +13,8 @@
     </div>
 
     <ng-template #inputFieldSettings>
-        <app-field-settings-form [formFieldVisibilityTriggers]="availableFormFieldsWithChoices" [pageData]="fieldSettingsData" 
-            (fieldSettingsUpdatedData)="setUpdatedFieldSettingsData($event)" (showFieldVisibilityForm)="emitFieldVisibilityFormValues($event)" (makingChanges)="getMakingChangesState($event)"></app-field-settings-form>
+        <app-field-settings-form [formFieldVisibilityTriggers]="formFieldVisibilityTriggers" [pageData]="fieldSettingsData" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
+            (fieldSettingsUpdatedData)="setUpdatedFieldSettingsData($event)" (showFieldVisibilityForm)="emitFieldVisibilityFormValues($event)"
+            (makingChanges)="getMakingChangesState($event)"></app-field-settings-form>
     </ng-template>
 </ng-container>

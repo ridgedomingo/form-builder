@@ -6,7 +6,7 @@
             <div class="field-options-container">
                 <div *ngFor="let option of fieldSettingsForm.controls.options.controls" id="checkbox-container">
                     <mat-checkbox [disabled]="true">
-                        {{ option.value}}
+                        {{ option.value }}
                     </mat-checkbox>
                 </div>
             </div>
@@ -17,7 +17,7 @@
     </div>
 
     <ng-template #fieldSettings>
-        <app-field-settings-form #fieldSettings [formFieldVisibilityTriggers]="availableFormFieldsWithChoices" [pageData]="fieldSettingsData"
+        <app-field-settings-form #fieldSettings [formFieldVisibilityTriggers]="formFieldVisibilityTriggers" [pageData]="fieldSettingsData"
             (fieldSettingsUpdatedData)="setUpdatedFieldSettingsData($event)" (showFieldVisibilityForm)="emitFieldVisibilityFormValues($event)"
             (makingChanges)="hideFieldSettings()">
             <form [formGroup]="fieldSettingsForm">

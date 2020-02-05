@@ -49,7 +49,9 @@ import { TextAreaComponent } from './text-area/text-area.component';
     ],
     exports: [
         CheckboxComponent,
+        DropdownComponent,
         InputFieldComponent,
+        NumberInputFieldComponent,
         RadioButtonComponent,
         TextAreaComponent
     ],
