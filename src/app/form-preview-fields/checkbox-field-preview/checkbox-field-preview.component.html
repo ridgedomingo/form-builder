@@ -1,5 +1,4 @@
 <div class="field-preview-container">
-    <span> {{ field.index + 1 }} . </span>
     <mat-label [ngClass]="{'required': field.isRequired}">{{ field.title }}</mat-label>
     <div class="field-options-container">
         <div *ngFor="let option of field.choices">

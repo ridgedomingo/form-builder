@@ -64,6 +64,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public componentRef: any;
   public formBuilderChoices: Array<any> = [];
   public formItems: Array<any> = [];
+  public copyOfFormItems: Array<any> = [];
   public formFieldVisibilityTriggers: any;
   public formName: string;
   public formPreviewComponentRef: any;
@@ -95,14 +96,15 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     let fieldData: IFormFields = {} as IFormFields;
     this.questionCounter = this.questionCounter + 1;
     const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(fieldComponent);
+    const fieldType = formFieldComponentFactory.componentType.name.split('Component');
     fieldData = {
       alwaysShowField: true,
-      ...(this.fieldTypeHasChoices(formFieldComponentFactory.componentType.name) ?
+      ...(this.fieldTypeHasChoices(fieldType[0]) ?
         { choices: this.initialFieldOptionsValue } : {}),
       id: this.generateFormFieldId(),
       isRequired: false,
       title: `Question ${this.questionCounter}`,
-      type: formFieldComponentFactory.componentType.name,
+      type: fieldType[0]
     };
     this.formItems.push(fieldData);
     this.generateForm();
@@ -134,28 +136,20 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public showFormPreview(): void {
     this.questionnaireView = false;
     this.changeDetectorRef.detectChanges();
-    this.formItems.map((item, index) => {
-      this.formQuestionnaireRef.detach(index);
-    });
+    this.copyOfFormItems = Object.assign([], this.formItems);
+    this.formItems = [];
   }
 
   public showQuestionnaireView(): void {
     this.questionnaireView = true;
-    this.formItems.map((item, index) => {
-      this.formQuestionnaireRef.insert(item.hostView, index);
+    this.copyOfFormItems.map(item => {
+      this.formItems.push(item);
     });
-  }
-
-  private assignFieldNewIndex(): void {
-    this.formItems.forEach((field, index) => {
-      field.instance.componentPosition = index;
-    });
-    this.generateForm();
   }
 
   private createFieldsInFormPreview(): void {
     const form = JSON.parse(localStorage.getItem(this.formName));
-    form.fields.forEach(field => {
+    form.fields.forEach((field, index) => {
       const component = this.getFormFieldType(field.type);
       const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
       this.formPreviewComponentRef = this.formPreviewFieldsRef.createComponent(formFieldComponentFactory);
@@ -164,7 +158,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   private fieldTypeHasChoices(fieldType: string): boolean {
-    const fieldsWithChoices = ['RadioButtonComponent', 'DropdownComponent', 'CheckboxComponent'];
+    const fieldsWithChoices = ['RadioButton', 'Dropdown', 'Checkbox'];
     return fieldsWithChoices.includes(fieldType);
   }
 
@@ -242,11 +236,6 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     ];
     this.formName = 'Untitled Form';
     this.formTitleControl = new FormControl(this.formName);
-  }
-
-  private moveFormItemsPosition(indexToMove: number, newIndex: number): void {
-    const updatedFormItems = this.formItems.splice(indexToMove, 1)[0];
-    this.formItems.splice(newIndex, 0, updatedFormItems);
   }
 
   private saveFormToLocalStorage(form: IGeneratedForm): void {
