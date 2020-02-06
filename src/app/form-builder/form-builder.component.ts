@@ -1,4 +1,4 @@
-import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import {
   Component, ComponentFactoryResolver, ChangeDetectorRef,
@@ -92,27 +92,17 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     return this.formItems.length === 0 && this.questionnaireView;
   }
 
-  public addField(fieldComponent: any): void {
-    let fieldData: IFormFields = {} as IFormFields;
+  public addField(fieldComponent: any, position?: number): void {
     this.questionCounter = this.questionCounter + 1;
     const formFieldComponentFactory = this.componentFactoryResolver.resolveComponentFactory(fieldComponent);
     const fieldType = formFieldComponentFactory.componentType.name.split('Component');
-    fieldData = {
-      alwaysShowField: true,
-      ...(this.fieldTypeHasChoices(fieldType[0]) ?
-        { choices: this.initialFieldOptionsValue } : {}),
-      id: this.generateFormFieldId(),
-      isRequired: false,
-      title: `Question ${this.questionCounter}`,
-      type: fieldType[0]
-    };
-    this.formItems.push(fieldData);
+    const fieldData = this.getFieldData(fieldType);
+    if (typeof position !== 'undefined') {
+      this.formItems.splice(position, 0, fieldData);
+    } else {
+      this.formItems.push(fieldData);
+    }
     this.generateForm();
-  }
-
-  public clearForm(): void {
-    this.formQuestionnaireRef.clear();
-    this.questionCounter = 0;
   }
 
   public createNewForm(): void {
@@ -122,8 +112,17 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.formTitleControl.setValue(this.formName);
   }
 
-  public onDropDraggedField(event: any): void {
+  public rearrangeFormQuestions(event: any): void {
     moveItemInArray(this.formItems, event.previousIndex, event.currentIndex);
+  }
+
+  public onDraggedElementDropped(event: any): void {
+    if (event.previousContainer !== event.container) {
+      const fieldType = this.formBuilderChoices.filter(choice => choice.type === event.item.element.nativeElement.id);
+      this.addField(fieldType[0].component, event.currentIndex);
+    } else {
+      this.rearrangeFormQuestions(event);
+    }
   }
 
   public generateForm(): void {
@@ -146,6 +145,24 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       this.formItems.push(item);
     });
   }
+
+  private getFieldData(fieldType): IFormFields {
+    return {
+      alwaysShowField: true,
+      ...(this.fieldTypeHasChoices(fieldType[0]) ?
+        { choices: this.initialFieldOptionsValue } : {}),
+      id: this.generateFormFieldId(),
+      isRequired: false,
+      title: `Question ${this.questionCounter}`,
+      type: fieldType[0]
+    };
+  }
+
+  private clearForm(): void {
+    this.formItems = [];
+    this.questionCounter = 0;
+  }
+
 
   private createFieldsInFormPreview(): void {
     const form = JSON.parse(localStorage.getItem(this.formName));

@@ -3,15 +3,21 @@
     <div id="form-builder-container">
         <h2>Toolbox</h2>
         <hr>
-        <div *ngFor="let choice of formBuilderChoices" (click)="addField(choice.component)" id="form-field-options">
-            <mat-icon id="form-field-options-icon">{{ choice.icon }}</mat-icon>
-            {{ choice.type }}
+        <div cdkDropList [cdkDropListConnectedTo]="['questionnaire-fields', 'no-selection-made']" cdkDropListSortingDisabled (cdkDropListDropped)="onDraggedElementDropped($event)"
+            id="questionnaire-choices">
+            <div class="dragged-element-placeholder" *cdkDragPreview></div>
+            <div *ngFor="let choice of formBuilderChoices" (click)="addField(choice.component)" [cdkDragData]="choice" class="form-field-options"
+                cdkDrag [id]="choice.type">
+                <mat-icon id="form-field-options-icon">{{ choice.icon }}</mat-icon>
+                {{ choice.type }}
+            </div>
         </div>
     </div>
     <div id="form-container">
-        <div *ngIf="noSelectionMade; else formQuestionnaire" class="form-container-items">
+        <div *ngIf="noSelectionMade; else formQuestionnaire" (cdkDropListDropped)="onDraggedElementDropped($event)" cdkDropList class="form-container-items"
+            id="no-selection-made">
             <h2>You have not yet selected any fields!</h2>
-            <p>Select from the options from the toolbox on your left to get started.</p>
+            <p>Drag or click from the options in the toolbox on your left to get started.</p>
         </div>
 
         <ng-template #formQuestionnaire>
@@ -49,8 +55,10 @@
                         </ng-template>
                     </div>
                 </div>
-                <div cdkDropList (cdkDropListDropped)="onDropDraggedField($event)">
-                    <div #formQuestionnaireFields *ngFor="let item of formItems; let indx = index" cdkDrag>
+                <div cdkDropList [cdkDropListConnectedTo]="['questionnaire-choices']" (cdkDropListDropped)="onDraggedElementDropped($event)"
+                    id="questionnaire-fields">
+                    <div *ngFor="let item of formItems; let indx = index" cdkDrag cdkDragBoundary="#questionnaire-fields">
+                        <div class="dragged-element-placeholder" *cdkDragPlaceholder></div>
                         <ng-container [ngSwitch]="item.type">
                             <ng-container *ngSwitchCase="'Checkbox'">
                                 <app-checkbox [fieldData]="item" [componentPosition]="indx" (componentAction)="subscribeToFormFieldEvents($event)" [formFieldVisibilityTriggers]="formFieldVisibilityTriggers"
