@@ -114,6 +114,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
   public rearrangeFormQuestions(event: any): void {
     moveItemInArray(this.formItems, event.previousIndex, event.currentIndex);
+    this.generateForm();
   }
 
   public onDraggedElementDropped(event: any): void {
